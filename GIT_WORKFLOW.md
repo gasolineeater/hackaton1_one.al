@@ -2,6 +2,31 @@
 
 This document outlines the recommended Git workflow for our hackathon project. Following these guidelines will help us maintain a clean, organized repository and make collaboration easier.
 
+## Remote Repository
+
+Our code is hosted on [GitHub/GitLab/Bitbucket] at the following URL:
+```
+https://[platform].com/[username]/one-albania-sme-dashboard
+```
+
+### Getting Started
+
+1. **Clone the repository**
+   ```bash
+   git clone https://[platform].com/[username]/one-albania-sme-dashboard.git
+   cd one-albania-sme-dashboard
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
 ## Commit Message Guidelines
 
 Each commit should represent a single logical change and have a clear, descriptive message. Use the following format:
