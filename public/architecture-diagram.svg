@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f8f9fa" />
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold">ONE Albania SME Dashboard Architecture</text>
+  
+  <!-- Layers -->
+  <g>
+    <!-- Presentation Layer -->
+    <rect x="100" y="80" width="600" height="80" rx="5" fill="#e41e26" opacity="0.8" />
+    <text x="400" y="120" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Presentation Layer</text>
+    <text x="400" y="145" font-family="Arial" font-size="14" text-anchor="middle" fill="white">React Components with Material UI</text>
+    
+    <!-- Application Layer -->
+    <rect x="100" y="180" width="600" height="80" rx="5" fill="#1e88e5" opacity="0.8" />
+    <text x="400" y="220" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Application Layer</text>
+    <text x="400" y="245" font-family="Arial" font-size="14" text-anchor="middle" fill="white">React Hooks, Context API, State Management</text>
+    
+    <!-- Data Layer -->
+    <rect x="100" y="280" width="600" height="80" rx="5" fill="#388e3c" opacity="0.8" />
+    <text x="400" y="320" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">Data Layer</text>
+    <text x="400" y="345" font-family="Arial" font-size="14" text-anchor="middle" fill="white">API Services, Data Models, Mock Data</text>
+    
+    <!-- External Services -->
+    <rect x="100" y="380" width="600" height="80" rx="5" fill="#6a1b9a" opacity="0.8" />
+    <text x="400" y="420" font-family="Arial" font-size="18" text-anchor="middle" fill="white" font-weight="bold">External Services</text>
+    <text x="400" y="445" font-family="Arial" font-size="14" text-anchor="middle" fill="white">ONE Albania Telecom APIs (Future Integration)</text>
+  </g>
+  
+  <!-- Components -->
+  <g>
+    <!-- Dashboard -->
+    <rect x="120" y="100" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="160" y="125" font-family="Arial" font-size="12" text-anchor="middle">Dashboard</text>
+    
+    <!-- Service Overview -->
+    <rect x="220" y="100" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="260" y="125" font-family="Arial" font-size="12" text-anchor="middle">Service Overview</text>
+    
+    <!-- Cost Control -->
+    <rect x="320" y="100" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="360" y="125" font-family="Arial" font-size="12" text-anchor="middle">Cost Control</text>
+    
+    <!-- Service Management -->
+    <rect x="420" y="100" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="460" y="125" font-family="Arial" font-size="12" text-anchor="middle">Service Mgmt</text>
+    
+    <!-- Analytics -->
+    <rect x="520" y="100" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="560" y="125" font-family="Arial" font-size="12" text-anchor="middle">Analytics</text>
+    
+    <!-- AI Recommendations -->
+    <rect x="620" y="100" width="60" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="650" y="125" font-family="Arial" font-size="12" text-anchor="middle">AI Recs</text>
+    
+    <!-- Hooks -->
+    <rect x="160" y="200" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="200" y="225" font-family="Arial" font-size="12" text-anchor="middle">React Hooks</text>
+    
+    <!-- Context -->
+    <rect x="260" y="200" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="300" y="225" font-family="Arial" font-size="12" text-anchor="middle">Context API</text>
+    
+    <!-- Router -->
+    <rect x="360" y="200" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="400" y="225" font-family="Arial" font-size="12" text-anchor="middle">React Router</text>
+    
+    <!-- Theme -->
+    <rect x="460" y="200" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="500" y="225" font-family="Arial" font-size="12" text-anchor="middle">MUI Theme</text>
+    
+    <!-- Charts -->
+    <rect x="560" y="200" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="600" y="225" font-family="Arial" font-size="12" text-anchor="middle">Recharts</text>
+    
+    <!-- API Services -->
+    <rect x="160" y="300" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="200" y="325" font-family="Arial" font-size="12" text-anchor="middle">API Services</text>
+    
+    <!-- Mock Data -->
+    <rect x="260" y="300" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="300" y="325" font-family="Arial" font-size="12" text-anchor="middle">Mock Data</text>
+    
+    <!-- Models -->
+    <rect x="360" y="300" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="400" y="325" font-family="Arial" font-size="12" text-anchor="middle">Data Models</text>
+    
+    <!-- Utils -->
+    <rect x="460" y="300" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="500" y="325" font-family="Arial" font-size="12" text-anchor="middle">Utilities</text>
+    
+    <!-- Formatters -->
+    <rect x="560" y="300" width="80" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="600" y="325" font-family="Arial" font-size="12" text-anchor="middle">Formatters</text>
+    
+    <!-- Telecom API -->
+    <rect x="200" y="400" width="100" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="250" y="425" font-family="Arial" font-size="12" text-anchor="middle">Telecom API</text>
+    
+    <!-- Billing API -->
+    <rect x="350" y="400" width="100" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="400" y="425" font-family="Arial" font-size="12" text-anchor="middle">Billing API</text>
+    
+    <!-- Auth API -->
+    <rect x="500" y="400" width="100" height="40" rx="5" fill="white" stroke="#333" />
+    <text x="550" y="425" font-family="Arial" font-size="12" text-anchor="middle">Auth API</text>
+  </g>
+  
+  <!-- Arrows -->
+  <g stroke="#333" stroke-width="1.5" fill="none">
+    <!-- Between layers -->
+    <path d="M400,160 L400,180" marker-end="url(#arrowhead)" />
+    <path d="M400,260 L400,280" marker-end="url(#arrowhead)" />
+    <path d="M400,360 L400,380" marker-end="url(#arrowhead)" />
+  </g>
+  
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+</svg>
