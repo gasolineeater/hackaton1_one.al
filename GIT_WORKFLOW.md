@@ -4,17 +4,17 @@ This document outlines the recommended Git workflow for our hackathon project. F
 
 ## Remote Repository
 
-Our code is hosted on [GitHub/GitLab/Bitbucket] at the following URL:
+Our code is hosted on GitHub at the following URL:
 ```
-https://[platform].com/[username]/one-albania-sme-dashboard
+https://github.com/gasolineeater/hackaton1_one.al
 ```
 
 ### Getting Started
 
 1. **Clone the repository**
    ```bash
-   git clone https://[platform].com/[username]/one-albania-sme-dashboard.git
-   cd one-albania-sme-dashboard
+   git clone git@github.com:gasolineeater/hackaton1_one.al.git
+   cd hackaton1_one.al
    ```
 
 2. **Install dependencies**
