@@ -2,6 +2,13 @@
 
 This guide provides instructions for installing, running, and testing the ONE Albania SME Dashboard project.
 
+## 👥 Team Members
+
+- **Elvi Zekaj** - Frontend Developer
+- **Aldin Zendeli** - UI/UX Designer
+- **Guido Andreini** - Backend Developer
+- **Lorenzo Agnello** - Project Manager
+
 ## 📋 Prerequisites
 
 - Node.js (v14 or later)

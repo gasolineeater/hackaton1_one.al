@@ -1,12 +1,78 @@
-# React + Vite
+# ONE Albania SME Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img src="public/one-albania-logo.svg" alt="ONE Albania Logo" width="300">
+</p>
 
-Currently, two official plugins are available:
+A smart dashboard solution for Small and Medium Enterprises (SMEs) to manage their telecom services with ONE Albania.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📋 Project Overview
 
-## Expanding the ESLint configuration
+This project is our submission for the ONE Albania challenge at the Junction Hackathon. We're building an intuitive SME dashboard that combines telecom service management, analytics, and smart business tools into a single interface.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🎯 Challenge Requirements
+
+ONE Albania wants a unified, intelligent digital dashboard for SMEs that helps them:
+- Monitor real-time usage and billing
+- Optimize telecom spending
+- Access and control services instantly
+- Get AI-powered recommendations for better plans
+
+## 🚀 Quick Start
+
+See [INSTALL.md](INSTALL.md) for detailed installation and setup instructions.
+
+## 📊 Features
+
+### Service Overview
+View and manage all telecom lines and services in one place.
+
+### Cost Control
+Monitor and optimize telecom spending with budget tools and alerts.
+
+### Usage Analytics
+Visualize usage trends and identify optimization opportunities.
+
+### AI Recommendations
+Get personalized suggestions to optimize services and reduce costs.
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React with Vite
+- **UI Library**: Material UI
+- **State Management**: React Context API
+- **Charts & Visualization**: Recharts
+- **Routing**: React Router
+
+## 🧠 Architecture
+
+Our application follows a modern frontend architecture:
+
+![Architecture Diagram](public/architecture-diagram.svg)
+
+## 👥 Team Members
+
+- **Elvi Zekaj** - Frontend Developer
+- **Aldin Zendeli** - UI/UX Designer
+- **Guido Andreini** - Backend Developer
+- **Lorenzo Agnello** - Project Manager
+
+## 📝 Development
+
+For development guidelines, see [HACKATHON_GUIDE.md](HACKATHON_GUIDE.md).
+
+## 🔄 Git Workflow
+
+For Git workflow guidelines, see [GIT_WORKFLOW.md](GIT_WORKFLOW.md).
+
+## 🏆 Judging Criteria Focus
+
+- **Innovative Ideas**: Unique features that add business value
+- **System Design**: Clean architecture and code organization
+- **Core Functionality**: Implementation of required features
+- **UI/UX**: User-friendly interface and experience
+- **Teamwork**: Collaborative development process
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
