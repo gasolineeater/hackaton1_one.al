@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import './App.css';
@@ -12,6 +12,11 @@ import CostControl from './components/CostControl/CostControl';
 import ServiceManagement from './components/ServiceManagement/ServiceManagement';
 import Analytics from './components/Analytics/Analytics';
 import AIRecommendations from './components/AIRecommendations/AIRecommendations';
+import LoginPage from './components/Login/LoginPage';
+import LogoutPage from './components/Logout/LogoutPage';
+
+// Context
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Create a custom theme
 const theme = createTheme({
@@ -90,23 +95,83 @@ const theme = createTheme({
   },
 });
 
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Layout>
+      <AuthProvider>
+        <Router>
           <Routes>
-            <Route path="/" element={<DashboardHome />} />
-            <Route path="/service-overview" element={<ServiceOverview />} />
-            <Route path="/cost-control" element={<CostControl />} />
-            <Route path="/service-management" element={<ServiceManagement />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/ai-recommendations" element={<AIRecommendations />} />
-            <Route path="*" element={<DashboardHome />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/logout" element={<LogoutPage />} />
+
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Layout>
+                  <DashboardHome />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/service-overview" element={
+              <ProtectedRoute>
+                <Layout>
+                  <ServiceOverview />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/cost-control" element={
+              <ProtectedRoute>
+                <Layout>
+                  <CostControl />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/service-management" element={
+              <ProtectedRoute>
+                <Layout>
+                  <ServiceManagement />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/analytics" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Analytics />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/ai-recommendations" element={
+              <ProtectedRoute>
+                <Layout>
+                  <AIRecommendations />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </Layout>
-      </Router>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
