@@ -881,6 +881,150 @@ const notificationsService = {
   }
 };
 
+/**
+ * Service Management API
+ */
+const serviceManagementService = {
+  /**
+   * Get all services
+   * @returns {Promise} - Resolved with services data
+   */
+  getAllServices: async () => {
+    const response = await fetch(`${API_URL}/service-management`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get service by ID
+   * @param {string} id - Service ID
+   * @returns {Promise} - Resolved with service data
+   */
+  getServiceById: async (id) => {
+    const response = await fetch(`${API_URL}/service-management/${id}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Create a new service
+   * @param {Object} serviceData - Service data
+   * @returns {Promise} - Resolved with created service
+   */
+  createService: async (serviceData) => {
+    const response = await fetch(`${API_URL}/service-management`, {
+      method: 'POST',
+      headers: createHeaders(),
+      body: JSON.stringify(serviceData)
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Update service
+   * @param {string} id - Service ID
+   * @param {Object} serviceData - Updated service data
+   * @returns {Promise} - Resolved with updated service
+   */
+  updateService: async (id, serviceData) => {
+    const response = await fetch(`${API_URL}/service-management/${id}`, {
+      method: 'PUT',
+      headers: createHeaders(),
+      body: JSON.stringify(serviceData)
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Delete service
+   * @param {string} id - Service ID
+   * @returns {Promise} - Resolved with success message
+   */
+  deleteService: async (id) => {
+    const response = await fetch(`${API_URL}/service-management/${id}`, {
+      method: 'DELETE',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Enable service
+   * @param {string} id - Service ID
+   * @returns {Promise} - Resolved with updated service
+   */
+  enableService: async (id) => {
+    const response = await fetch(`${API_URL}/service-management/${id}/enable`, {
+      method: 'PUT',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Disable service
+   * @param {string} id - Service ID
+   * @returns {Promise} - Resolved with updated service
+   */
+  disableService: async (id) => {
+    const response = await fetch(`${API_URL}/service-management/${id}/disable`, {
+      method: 'PUT',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get available services
+   * @returns {Promise} - Resolved with available services
+   */
+  getAvailableServices: async () => {
+    const response = await fetch(`${API_URL}/service-management/available`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Initialize default services
+   * @returns {Promise} - Resolved with created services
+   */
+  initializeDefaultServices: async () => {
+    const response = await fetch(`${API_URL}/service-management/initialize`, {
+      method: 'POST',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get service usage
+   * @returns {Promise} - Resolved with service usage data
+   */
+  getServiceUsage: async () => {
+    const response = await fetch(`${API_URL}/service-management/usage`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  }
+};
+
 // Export all services
 export {
   authService,
@@ -890,6 +1034,7 @@ export {
   analyticsService,
   costControlService,
   notificationsService,
+  serviceManagementService,
   getToken,
   getUser,
   setToken,

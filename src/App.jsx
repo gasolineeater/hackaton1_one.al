@@ -18,6 +18,7 @@ import LogoutPage from './components/Logout/LogoutPage';
 // Context
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { ServiceManagementProvider } from './contexts/ServiceManagementContext';
 
 // Create a custom theme
 const theme = createTheme({
@@ -117,62 +118,64 @@ function App() {
       <CssBaseline />
       <AuthProvider>
         <NotificationProvider>
-          <Router>
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/logout" element={<LogoutPage />} />
+          <ServiceManagementProvider>
+            <Router>
+              <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/logout" element={<LogoutPage />} />
 
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <DashboardHome />
-                  </Layout>
-                </ProtectedRoute>
-              } />
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <DashboardHome />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
 
-              <Route path="/service-overview" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <ServiceOverview />
-                  </Layout>
-                </ProtectedRoute>
-              } />
+                <Route path="/service-overview" element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <ServiceOverview />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
 
-              <Route path="/cost-control" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <CostControl />
-                  </Layout>
-                </ProtectedRoute>
-              } />
+                <Route path="/cost-control" element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <CostControl />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
 
-              <Route path="/service-management" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <ServiceManagement />
-                  </Layout>
-                </ProtectedRoute>
-              } />
+                <Route path="/service-management" element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <ServiceManagement />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
 
-              <Route path="/analytics" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Analytics />
-                  </Layout>
-                </ProtectedRoute>
-              } />
+                <Route path="/analytics" element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Analytics />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
 
-              <Route path="/ai-recommendations" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <AIRecommendations />
-                  </Layout>
-                </ProtectedRoute>
-              } />
+                <Route path="/ai-recommendations" element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <AIRecommendations />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
 
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </Router>
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </Router>
+          </ServiceManagementProvider>
         </NotificationProvider>
       </AuthProvider>
     </ThemeProvider>
