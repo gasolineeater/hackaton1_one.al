@@ -181,6 +181,132 @@ class User {
   static async validatePassword(password, hashedPassword) {
     return await bcrypt.compare(password, hashedPassword);
   }
+
+  /**
+   * Save refresh token
+   * @param {number} userId - User ID
+   * @param {string} refreshToken - Refresh token
+   * @returns {Promise} - Boolean indicating success
+   */
+  static async saveRefreshToken(userId, refreshToken) {
+    try {
+      // Check if refresh_tokens table exists
+      const [tables] = await pool.execute(`
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = DATABASE()
+        AND table_name = 'refresh_tokens'
+      `);
+
+      // Create table if it doesn't exist
+      if (tables.length === 0) {
+        await pool.execute(`
+          CREATE TABLE refresh_tokens (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            token VARCHAR(255) NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            INDEX idx_user_id (user_id),
+            INDEX idx_token (token)
+          )
+        `);
+      }
+
+      // Calculate expiration (7 days from now)
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7);
+
+      // Save token
+      const [result] = await pool.execute(
+        'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES (?, ?, ?)',
+        [userId, refreshToken, expiresAt]
+      );
+
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Verify refresh token
+   * @param {number} userId - User ID
+   * @param {string} refreshToken - Refresh token
+   * @returns {Promise} - Boolean indicating if token is valid
+   */
+  static async verifyRefreshToken(userId, refreshToken) {
+    try {
+      const [rows] = await pool.execute(
+        'SELECT * FROM refresh_tokens WHERE user_id = ? AND token = ? AND expires_at > NOW()',
+        [userId, refreshToken]
+      );
+
+      return rows.length > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update refresh token
+   * @param {number} userId - User ID
+   * @param {string} oldToken - Old refresh token
+   * @param {string} newToken - New refresh token
+   * @returns {Promise} - Boolean indicating success
+   */
+  static async updateRefreshToken(userId, oldToken, newToken) {
+    try {
+      // Invalidate old token
+      await pool.execute(
+        'DELETE FROM refresh_tokens WHERE user_id = ? AND token = ?',
+        [userId, oldToken]
+      );
+
+      // Save new token
+      return await this.saveRefreshToken(userId, newToken);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Invalidate refresh token
+   * @param {number} userId - User ID
+   * @param {string} refreshToken - Refresh token
+   * @returns {Promise} - Boolean indicating success
+   */
+  static async invalidateRefreshToken(userId, refreshToken) {
+    try {
+      const [result] = await pool.execute(
+        'DELETE FROM refresh_tokens WHERE user_id = ? AND token = ?',
+        [userId, refreshToken]
+      );
+
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Invalidate all refresh tokens for a user
+   * @param {number} userId - User ID
+   * @returns {Promise} - Boolean indicating success
+   */
+  static async invalidateAllRefreshTokens(userId) {
+    try {
+      const [result] = await pool.execute(
+        'DELETE FROM refresh_tokens WHERE user_id = ?',
+        [userId]
+      );
+
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = User;

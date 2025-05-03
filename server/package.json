@@ -30,7 +30,9 @@
     "mysql2": "^3.6.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "winston": "^3.10.0"
+    "uuid": "^9.0.0",
+    "winston": "^3.10.0",
+    "xss": "^1.0.14"
   },
   "devDependencies": {
     "jest": "^29.5.0",
