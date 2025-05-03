@@ -1,4 +1,6 @@
 const AIRecommendation = require('../models/aiRecommendation.model');
+const logger = require('../utils/logger');
+const apiResponse = require('../utils/apiResponse');
 
 /**
  * Get all AI recommendations for a user
@@ -9,27 +11,28 @@ const AIRecommendation = require('../models/aiRecommendation.model');
 exports.getAllRecommendations = async (req, res) => {
   try {
     const { limit, offset, priority, applied } = req.query;
-    const options = { 
-      limit, 
-      offset, 
+    const options = {
+      limit,
+      offset,
       priority,
       applied: applied !== undefined ? applied === 'true' : undefined
     };
-    
+
     // Get AI recommendations
     const recommendations = await AIRecommendation.findAllByUser(req.userId, options);
-    
+
     // Get total count for pagination
     const totalCount = await AIRecommendation.getTotalCount(req.userId, { priority, applied: options.applied });
-    
-    res.status(200).json({
+
+    return apiResponse.success(res, {
       recommendations,
       totalCount,
       limit: limit ? parseInt(limit) : null,
       offset: offset ? parseInt(offset) : null
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error('Error getting AI recommendations:', error);
+    return apiResponse.error(res, error.message);
   }
 };
 
@@ -42,19 +45,20 @@ exports.getAllRecommendations = async (req, res) => {
 exports.getRecommendationById = async (req, res) => {
   try {
     const recommendation = await AIRecommendation.findById(req.params.id);
-    
+
     if (!recommendation) {
-      return res.status(404).json({ message: 'AI recommendation not found!' });
+      return apiResponse.notFound(res, 'AI recommendation not found!');
     }
-    
+
     // Check if the recommendation belongs to the user
     if (recommendation.user_id !== req.userId) {
-      return res.status(403).json({ message: 'Access denied!' });
+      return apiResponse.forbidden(res, 'Access denied!');
     }
-    
-    res.status(200).json(recommendation);
+
+    return apiResponse.success(res, { recommendation });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error('Error getting AI recommendation by ID:', error);
+    return apiResponse.error(res, error.message);
   }
 };
 
@@ -67,22 +71,23 @@ exports.getRecommendationById = async (req, res) => {
 exports.applyRecommendation = async (req, res) => {
   try {
     const recommendation = await AIRecommendation.findById(req.params.id);
-    
+
     if (!recommendation) {
-      return res.status(404).json({ message: 'AI recommendation not found!' });
+      return apiResponse.notFound(res, 'AI recommendation not found!');
     }
-    
+
     // Check if the recommendation belongs to the user
     if (recommendation.user_id !== req.userId) {
-      return res.status(403).json({ message: 'Access denied!' });
+      return apiResponse.forbidden(res, 'Access denied!');
     }
-    
+
     // Update recommendation to mark as applied
     const updatedRecommendation = await AIRecommendation.update(req.params.id, { is_applied: true });
-    
-    res.status(200).json(updatedRecommendation);
+
+    return apiResponse.success(res, { recommendation: updatedRecommendation }, 'Recommendation applied successfully');
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error('Error applying AI recommendation:', error);
+    return apiResponse.error(res, error.message);
   }
 };
 
@@ -95,26 +100,27 @@ exports.applyRecommendation = async (req, res) => {
 exports.dismissRecommendation = async (req, res) => {
   try {
     const recommendation = await AIRecommendation.findById(req.params.id);
-    
+
     if (!recommendation) {
-      return res.status(404).json({ message: 'AI recommendation not found!' });
+      return apiResponse.notFound(res, 'AI recommendation not found!');
     }
-    
+
     // Check if the recommendation belongs to the user
     if (recommendation.user_id !== req.userId) {
-      return res.status(403).json({ message: 'Access denied!' });
+      return apiResponse.forbidden(res, 'Access denied!');
     }
-    
+
     // Delete recommendation
     const result = await AIRecommendation.delete(req.params.id);
-    
+
     if (result) {
-      res.status(200).json({ message: 'AI recommendation dismissed successfully!' });
+      return apiResponse.success(res, null, 'AI recommendation dismissed successfully!');
     } else {
-      res.status(500).json({ message: 'Failed to dismiss AI recommendation!' });
+      return apiResponse.error(res, 'Failed to dismiss AI recommendation!', 500);
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error('Error dismissing AI recommendation:', error);
+    return apiResponse.error(res, error.message);
   }
 };
 
@@ -128,12 +134,13 @@ exports.generateRecommendations = async (req, res) => {
   try {
     // Generate recommendations based on user data
     const recommendations = await AIRecommendation.generateRecommendations(req.userId);
-    
-    res.status(200).json({
-      message: `Generated ${recommendations.length} new recommendations.`,
-      recommendations
-    });
+
+    return apiResponse.success(res, {
+      recommendations,
+      count: recommendations.length
+    }, `Generated ${recommendations.length} new recommendations.`);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error('Error generating AI recommendations:', error);
+    return apiResponse.error(res, error.message);
   }
 };

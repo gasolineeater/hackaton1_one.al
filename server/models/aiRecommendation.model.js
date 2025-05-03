@@ -5,6 +5,8 @@ const {
   findOptimalPlan,
   identifyDataSharingOpportunities
 } = require('../utils/aiAlgorithms');
+const { generateRecommendations: generateGeminiRecommendations } = require('../services/gemini.service');
+const logger = require('../utils/logger');
 
 /**
  * AI Recommendation Model
@@ -225,43 +227,101 @@ class AIRecommendation {
       // Get all service plans
       const [plans] = await pool.execute('SELECT * FROM service_plans');
 
-      // Generate recommendations based on data
+      // Get user info
+      const [userInfo] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+      const user = userInfo[0];
+
+      // Try to use Gemini API for recommendations first
+      let geminiRecommendations = [];
+      try {
+        // Get usage history for analysis
+        const [usageHistory] = await pool.execute(`
+          SELECT uh.*, tl.phone_number, tl.assigned_to
+          FROM usage_history uh
+          JOIN telecom_lines tl ON uh.line_id = tl.id
+          WHERE tl.user_id = ?
+          ORDER BY uh.year DESC, uh.month DESC
+          LIMIT 50
+        `, [userId]);
+
+        // Format current services for Gemini
+        const currentServices = lines.map(line => ({
+          phone_number: line.phone_number,
+          assigned_to: line.assigned_to,
+          plan: line.plan_name,
+          data_limit: line.data_limit,
+          current_usage: line.current_usage || 0
+        }));
+
+        // Generate recommendations using Gemini
+        geminiRecommendations = await generateGeminiRecommendations({
+          userId,
+          businessType: user.company_name ? 'Business' : 'SME',
+          employeeCount: lines.length,
+          currentServices: JSON.stringify(currentServices),
+          usageData: usageHistory.length > 0 ? JSON.stringify(usageHistory.slice(0, 10)) : null
+        });
+
+        logger.info(`Generated ${geminiRecommendations.length} recommendations using Gemini API`);
+      } catch (error) {
+        logger.error('Error generating recommendations with Gemini:', error);
+        // Fall back to rule-based recommendations
+        geminiRecommendations = [];
+      }
+
+      // If we got recommendations from Gemini, use those
       const recommendations = [];
 
-      // Process each line for plan optimization recommendations
-      for (const line of lines) {
-        // Get usage history for this line
-        const [lineUsageHistory] = await pool.execute(`
-          SELECT * FROM usage_history
-          WHERE line_id = ?
-          ORDER BY year DESC, month DESC
-        `, [line.id]);
-
-        // Find optimal plan using AI algorithm
-        const planRecommendation = findOptimalPlan(line, plans, lineUsageHistory);
-
-        if (planRecommendation.hasRecommendation) {
-          const { currentPlan, recommendedPlan, savings, reason, priority } = planRecommendation;
-
-          let title, description;
-
-          if (reason === 'underutilization') {
-            title = `Downgrade plan for ${line.phone_number}`;
-            description = `Based on your usage patterns, downgrading from ${currentPlan.name} to ${recommendedPlan.name} would save €${savings.toFixed(2)} per month while still meeting your needs.`;
-          } else if (reason === 'approaching_limit') {
-            title = `Upgrade plan for ${line.phone_number}`;
-            description = `Your usage is ${line.current_usage > line.monthly_limit ? 'exceeding' : 'approaching'} your current limit. Upgrading from ${currentPlan.name} to ${recommendedPlan.name} would save approximately €${savings.toFixed(2)} per month by avoiding overage charges.`;
-          }
-
+      if (geminiRecommendations.length > 0) {
+        // Format and save Gemini recommendations
+        for (const rec of geminiRecommendations) {
           recommendations.push({
-            title,
-            description,
-            savings_amount: savings,
-            priority,
+            title: rec.title,
+            description: rec.description,
+            savings_amount: rec.savings_amount || 0,
+            priority: rec.priority || 'medium',
             user_id: userId,
             is_applied: false
           });
         }
+      } else {
+        // Fall back to rule-based recommendations
+        logger.info('Falling back to rule-based recommendations');
+
+        // Process each line for plan optimization recommendations
+        for (const line of lines) {
+          // Get usage history for this line
+          const [lineUsageHistory] = await pool.execute(`
+            SELECT * FROM usage_history
+            WHERE line_id = ?
+            ORDER BY year DESC, month DESC
+          `, [line.id]);
+
+          // Find optimal plan using AI algorithm
+          const planRecommendation = findOptimalPlan(line, plans, lineUsageHistory);
+
+          if (planRecommendation.hasRecommendation) {
+            const { currentPlan, recommendedPlan, savings, reason, priority } = planRecommendation;
+
+            let title, description;
+
+            if (reason === 'underutilization') {
+              title = `Downgrade plan for ${line.phone_number}`;
+              description = `Based on your usage patterns, downgrading from ${currentPlan.name} to ${recommendedPlan.name} would save €${savings.toFixed(2)} per month while still meeting your needs.`;
+            } else if (reason === 'approaching_limit') {
+              title = `Upgrade plan for ${line.phone_number}`;
+              description = `Your usage is ${line.current_usage > line.monthly_limit ? 'exceeding' : 'approaching'} your current limit. Upgrading from ${currentPlan.name} to ${recommendedPlan.name} would save approximately €${savings.toFixed(2)} per month by avoiding overage charges.`;
+            }
+
+            recommendations.push({
+              title,
+              description,
+              savings_amount: savings,
+              priority,
+              user_id: userId,
+              is_applied: false
+            });
+          }
 
         // Check for anomalies in usage
         const anomalies = detectAnomalies(lineUsageHistory);
