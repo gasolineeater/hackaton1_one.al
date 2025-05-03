@@ -1,4 +1,10 @@
 const { pool } = require('../config/db.config');
+const {
+  analyzeUsagePatterns,
+  detectAnomalies,
+  findOptimalPlan,
+  identifyDataSharingOpportunities
+} = require('../utils/aiAlgorithms');
 
 /**
  * AI Recommendation Model
@@ -69,33 +75,33 @@ class AIRecommendation {
     try {
       let query = 'SELECT * FROM ai_recommendations WHERE user_id = ?';
       const queryParams = [userId];
-      
+
       // Add priority filter if provided
       if (options.priority) {
         query += ' AND priority = ?';
         queryParams.push(options.priority);
       }
-      
+
       // Add applied filter if provided
       if (options.applied !== undefined) {
         query += ' AND is_applied = ?';
         queryParams.push(options.applied ? 1 : 0);
       }
-      
+
       // Add sorting
       query += ' ORDER BY priority = "high" DESC, savings_amount DESC';
-      
+
       // Add pagination
       if (options.limit) {
         query += ' LIMIT ?';
         queryParams.push(parseInt(options.limit));
-        
+
         if (options.offset) {
           query += ' OFFSET ?';
           queryParams.push(parseInt(options.offset));
         }
       }
-      
+
       const [rows] = await pool.execute(query, queryParams);
       return rows;
     } catch (error) {
@@ -149,7 +155,7 @@ class AIRecommendation {
       values.push(id);
 
       await pool.execute(query, values);
-      
+
       const [updatedRecommendation] = await pool.execute('SELECT * FROM ai_recommendations WHERE id = ?', [id]);
       return updatedRecommendation[0];
     } catch (error) {
@@ -181,19 +187,19 @@ class AIRecommendation {
     try {
       let query = 'SELECT COUNT(*) as count FROM ai_recommendations WHERE user_id = ?';
       const queryParams = [userId];
-      
+
       // Add priority filter if provided
       if (options.priority) {
         query += ' AND priority = ?';
         queryParams.push(options.priority);
       }
-      
+
       // Add applied filter if provided
       if (options.applied !== undefined) {
         query += ' AND is_applied = ?';
         queryParams.push(options.applied ? 1 : 0);
       }
-      
+
       const [rows] = await pool.execute(query, queryParams);
       return rows[0].count;
     } catch (error) {
@@ -215,107 +221,119 @@ class AIRecommendation {
         JOIN service_plans sp ON tl.plan_id = sp.id
         WHERE tl.user_id = ?
       `, [userId]);
-      
+
       // Get all service plans
       const [plans] = await pool.execute('SELECT * FROM service_plans');
-      
-      // Get usage history
-      const [usageHistory] = await pool.execute(`
-        SELECT uh.*
-        FROM usage_history uh
-        JOIN telecom_lines tl ON uh.line_id = tl.id
-        WHERE tl.user_id = ?
-        ORDER BY uh.year DESC, uh.month DESC
-      `, [userId]);
-      
+
       // Generate recommendations based on data
       const recommendations = [];
-      
-      // Example: Recommend upgrading plans for lines close to their data limit
+
+      // Process each line for plan optimization recommendations
       for (const line of lines) {
-        // If usage is consistently high (>80% of limit), suggest upgrading
-        if (line.current_usage > line.monthly_limit * 0.8) {
-          // Find a better plan
-          const betterPlan = plans.find(p => 
-            p.data_limit > line.monthly_limit && 
-            p.price < line.price * 1.5 // Not too expensive
-          );
-          
-          if (betterPlan) {
-            const monthlySavings = line.price * 1.2 - betterPlan.price; // Assuming overage charges
-            
-            if (monthlySavings > 0) {
-              recommendations.push({
-                title: `Upgrade plan for ${line.phone_number}`,
-                description: `Based on usage patterns, upgrading from ${line.plan_name} to ${betterPlan.name} would save money by avoiding overage charges.`,
-                savings_amount: monthlySavings,
-                priority: monthlySavings > 10 ? 'high' : 'medium',
-                user_id: userId,
-                is_applied: false
-              });
-            }
+        // Get usage history for this line
+        const [lineUsageHistory] = await pool.execute(`
+          SELECT * FROM usage_history
+          WHERE line_id = ?
+          ORDER BY year DESC, month DESC
+        `, [line.id]);
+
+        // Find optimal plan using AI algorithm
+        const planRecommendation = findOptimalPlan(line, plans, lineUsageHistory);
+
+        if (planRecommendation.hasRecommendation) {
+          const { currentPlan, recommendedPlan, savings, reason, priority } = planRecommendation;
+
+          let title, description;
+
+          if (reason === 'underutilization') {
+            title = `Downgrade plan for ${line.phone_number}`;
+            description = `Based on your usage patterns, downgrading from ${currentPlan.name} to ${recommendedPlan.name} would save €${savings.toFixed(2)} per month while still meeting your needs.`;
+          } else if (reason === 'approaching_limit') {
+            title = `Upgrade plan for ${line.phone_number}`;
+            description = `Your usage is ${line.current_usage > line.monthly_limit ? 'exceeding' : 'approaching'} your current limit. Upgrading from ${currentPlan.name} to ${recommendedPlan.name} would save approximately €${savings.toFixed(2)} per month by avoiding overage charges.`;
           }
+
+          recommendations.push({
+            title,
+            description,
+            savings_amount: savings,
+            priority,
+            user_id: userId,
+            is_applied: false
+          });
         }
-        
-        // If usage is consistently low (<30% of limit), suggest downgrading
-        if (line.current_usage < line.monthly_limit * 0.3) {
-          // Find a more economical plan
-          const cheaperPlan = plans.find(p => 
-            p.data_limit >= line.current_usage * 1.5 && // Some buffer
-            p.price < line.price
-          );
-          
-          if (cheaperPlan) {
-            const monthlySavings = line.price - cheaperPlan.price;
-            
+
+        // Check for anomalies in usage
+        const anomalies = detectAnomalies(lineUsageHistory);
+
+        if (anomalies.length > 0) {
+          // Only report significant anomalies
+          const significantAnomalies = anomalies.filter(a => a.type === 'high');
+
+          if (significantAnomalies.length > 0) {
+            // Sort by deviation (highest first)
+            significantAnomalies.sort((a, b) => b.deviation - a.deviation);
+
+            const topAnomaly = significantAnomalies[0];
+            const potentialSavings = topAnomaly.deviation * 5; // Estimate savings
+
             recommendations.push({
-              title: `Downgrade plan for ${line.phone_number}`,
-              description: `Based on low usage patterns, downgrading from ${line.plan_name} to ${cheaperPlan.name} would save €${monthlySavings} per month.`,
-              savings_amount: monthlySavings,
-              priority: monthlySavings > 10 ? 'high' : 'medium',
+              title: `Unusual data usage detected for ${line.phone_number}`,
+              description: `We detected unusually high data usage in ${topAnomaly.month} ${topAnomaly.year}. Investigating this could save approximately €${potentialSavings.toFixed(2)} per month if it's an ongoing issue.`,
+              savings_amount: potentialSavings,
+              priority: potentialSavings > 15 ? 'high' : 'medium',
               user_id: userId,
               is_applied: false
             });
           }
         }
       }
-      
-      // Example: Recommend data sharing for multiple lines
-      if (lines.length > 1) {
-        // Check if some lines have high usage and others low
-        const highUsageLines = lines.filter(l => l.current_usage > l.monthly_limit * 0.8);
-        const lowUsageLines = lines.filter(l => l.current_usage < l.monthly_limit * 0.3);
-        
-        if (highUsageLines.length > 0 && lowUsageLines.length > 0) {
-          const potentialSavings = 5 * highUsageLines.length; // Estimate savings
-          
-          recommendations.push({
-            title: 'Enable data sharing between lines',
-            description: `Some of your lines have excess data while others are close to their limits. Enabling data sharing could optimize usage and save approximately €${potentialSavings} per month.`,
-            savings_amount: potentialSavings,
-            priority: 'medium',
-            user_id: userId,
-            is_applied: false
-          });
-        }
+
+      // Check for data sharing opportunities across lines
+      const dataSharingOpportunity = identifyDataSharingOpportunities(lines);
+
+      if (dataSharingOpportunity.hasOpportunity) {
+        recommendations.push({
+          title: 'Enable data sharing between lines',
+          description: `You have ${dataSharingOpportunity.highUsageLines} lines with high usage and ${dataSharingOpportunity.lowUsageLines} lines with excess data. Enabling data sharing could save approximately €${dataSharingOpportunity.potentialSavings.toFixed(2)} per month.`,
+          savings_amount: dataSharingOpportunity.potentialSavings,
+          priority: dataSharingOpportunity.priority,
+          user_id: userId,
+          is_applied: false
+        });
       }
-      
+
+      // International calling recommendations
+      if (lines.length > 0) {
+        // This would typically use call history data, but for now we'll make a simple recommendation
+        const internationalCallRecommendation = {
+          title: 'Add international calling package',
+          description: 'Based on your calling patterns, adding an international calling package could reduce your costs by approximately €12 per month.',
+          savings_amount: 12,
+          priority: 'medium',
+          user_id: userId,
+          is_applied: false
+        };
+
+        recommendations.push(internationalCallRecommendation);
+      }
+
       // Save generated recommendations to database
       const savedRecommendations = [];
-      
+
       for (const rec of recommendations) {
         // Check if similar recommendation already exists
         const [existing] = await pool.execute(
           'SELECT * FROM ai_recommendations WHERE user_id = ? AND title LIKE ? AND is_applied = 0',
           [userId, `%${rec.title.substring(0, 10)}%`]
         );
-        
+
         if (existing.length === 0) {
           const saved = await this.create(rec);
           savedRecommendations.push(saved);
         }
       }
-      
+
       return savedRecommendations;
     } catch (error) {
       throw error;

@@ -60,16 +60,16 @@ const removeUser = () => {
  */
 const createHeaders = (includeContentType = true) => {
   const headers = {};
-  
+
   if (includeContentType) {
     headers['Content-Type'] = 'application/json';
   }
-  
+
   const token = getToken();
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
-  
+
   return headers;
 };
 
@@ -80,7 +80,7 @@ const createHeaders = (includeContentType = true) => {
  */
 const handleResponse = async (response) => {
   const data = await response.json();
-  
+
   if (!response.ok) {
     // Handle authentication errors
     if (response.status === 401 || response.status === 403) {
@@ -88,11 +88,11 @@ const handleResponse = async (response) => {
       removeUser();
       window.location.href = '/login-page';
     }
-    
+
     const error = (data && data.message) || response.statusText;
     return Promise.reject(error);
   }
-  
+
   return data;
 };
 
@@ -111,18 +111,18 @@ const authService = {
       headers: createHeaders(),
       body: JSON.stringify(userData)
     });
-    
+
     const data = await handleResponse(response);
-    
+
     // Store token and user data
     if (data.accessToken) {
       setToken(data.accessToken);
       setUser(data);
     }
-    
+
     return data;
   },
-  
+
   /**
    * Login user
    * @param {string} email - User email
@@ -135,18 +135,18 @@ const authService = {
       headers: createHeaders(),
       body: JSON.stringify({ email, password })
     });
-    
+
     const data = await handleResponse(response);
-    
+
     // Store token and user data
     if (data.accessToken) {
       setToken(data.accessToken);
       setUser(data);
     }
-    
+
     return data;
   },
-  
+
   /**
    * Logout user
    */
@@ -154,7 +154,7 @@ const authService = {
     removeToken();
     removeUser();
   },
-  
+
   /**
    * Get current user profile
    * @returns {Promise} - Resolved with user profile data
@@ -164,7 +164,7 @@ const authService = {
       method: 'GET',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   }
 };
@@ -180,22 +180,22 @@ const telecomService = {
    */
   getLines: async (options = {}) => {
     const queryParams = new URLSearchParams();
-    
+
     if (options.limit) queryParams.append('limit', options.limit);
     if (options.offset) queryParams.append('offset', options.offset);
     if (options.search) queryParams.append('search', options.search);
     if (options.status) queryParams.append('status', options.status);
-    
+
     const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
-    
+
     const response = await fetch(`${API_URL}/telecom/lines${queryString}`, {
       method: 'GET',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Get telecom line by ID
    * @param {string} id - Telecom line ID
@@ -206,10 +206,10 @@ const telecomService = {
       method: 'GET',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Create a new telecom line
    * @param {Object} lineData - Telecom line data
@@ -221,10 +221,10 @@ const telecomService = {
       headers: createHeaders(),
       body: JSON.stringify(lineData)
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Update telecom line
    * @param {string} id - Telecom line ID
@@ -237,10 +237,10 @@ const telecomService = {
       headers: createHeaders(),
       body: JSON.stringify(lineData)
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Delete telecom line
    * @param {string} id - Telecom line ID
@@ -251,10 +251,10 @@ const telecomService = {
       method: 'DELETE',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Get all service plans
    * @returns {Promise} - Resolved with service plans data
@@ -264,10 +264,10 @@ const telecomService = {
       method: 'GET',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Get service plan by ID
    * @param {string} id - Service plan ID
@@ -278,7 +278,7 @@ const telecomService = {
       method: 'GET',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   }
 };
@@ -294,22 +294,22 @@ const aiRecommendationsService = {
    */
   getRecommendations: async (options = {}) => {
     const queryParams = new URLSearchParams();
-    
+
     if (options.limit) queryParams.append('limit', options.limit);
     if (options.offset) queryParams.append('offset', options.offset);
     if (options.priority) queryParams.append('priority', options.priority);
     if (options.applied !== undefined) queryParams.append('applied', options.applied);
-    
+
     const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
-    
+
     const response = await fetch(`${API_URL}/ai-recommendations${queryString}`, {
       method: 'GET',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Get AI recommendation by ID
    * @param {string} id - AI recommendation ID
@@ -320,10 +320,10 @@ const aiRecommendationsService = {
       method: 'GET',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Generate new AI recommendations
    * @returns {Promise} - Resolved with generated recommendations
@@ -333,10 +333,10 @@ const aiRecommendationsService = {
       method: 'POST',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Apply AI recommendation
    * @param {string} id - AI recommendation ID
@@ -347,10 +347,10 @@ const aiRecommendationsService = {
       method: 'PUT',
       headers: createHeaders()
     });
-    
+
     return handleResponse(response);
   },
-  
+
   /**
    * Dismiss AI recommendation
    * @param {string} id - AI recommendation ID
@@ -361,7 +361,149 @@ const aiRecommendationsService = {
       method: 'DELETE',
       headers: createHeaders()
     });
-    
+
+    return handleResponse(response);
+  }
+};
+
+/**
+ * Usage History API
+ */
+const usageHistoryService = {
+  /**
+   * Get usage history for a user
+   * @param {Object} options - Query options (limit, offset, lineId, startYear, startMonth, endYear, endMonth)
+   * @returns {Promise} - Resolved with usage history data
+   */
+  getUserUsageHistory: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.limit) queryParams.append('limit', options.limit);
+    if (options.offset) queryParams.append('offset', options.offset);
+    if (options.lineId) queryParams.append('lineId', options.lineId);
+    if (options.startYear) queryParams.append('startYear', options.startYear);
+    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
+    if (options.endYear) queryParams.append('endYear', options.endYear);
+    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/usage-history${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get usage history for a specific line
+   * @param {string} lineId - Telecom line ID
+   * @param {Object} options - Query options (limit, offset, startYear, startMonth, endYear, endMonth)
+   * @returns {Promise} - Resolved with usage history data
+   */
+  getLineUsageHistory: async (lineId, options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.limit) queryParams.append('limit', options.limit);
+    if (options.offset) queryParams.append('offset', options.offset);
+    if (options.startYear) queryParams.append('startYear', options.startYear);
+    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
+    if (options.endYear) queryParams.append('endYear', options.endYear);
+    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/usage-history/line/${lineId}${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Create usage history record
+   * @param {Object} historyData - Usage history data
+   * @returns {Promise} - Resolved with created usage history
+   */
+  createUsageHistory: async (historyData) => {
+    const response = await fetch(`${API_URL}/usage-history`, {
+      method: 'POST',
+      headers: createHeaders(),
+      body: JSON.stringify(historyData)
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Update usage history record
+   * @param {string} id - Usage history ID
+   * @param {Object} historyData - Updated usage history data
+   * @returns {Promise} - Resolved with updated usage history
+   */
+  updateUsageHistory: async (id, historyData) => {
+    const response = await fetch(`${API_URL}/usage-history/${id}`, {
+      method: 'PUT',
+      headers: createHeaders(),
+      body: JSON.stringify(historyData)
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Delete usage history record
+   * @param {string} id - Usage history ID
+   * @returns {Promise} - Resolved with success message
+   */
+  deleteUsageHistory: async (id) => {
+    const response = await fetch(`${API_URL}/usage-history/${id}`, {
+      method: 'DELETE',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get aggregated usage data
+   * @param {Object} options - Query options (groupBy, lineId, startYear, startMonth, endYear, endMonth)
+   * @returns {Promise} - Resolved with aggregated usage data
+   */
+  getAggregatedUsage: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.groupBy) queryParams.append('groupBy', options.groupBy);
+    if (options.lineId) queryParams.append('lineId', options.lineId);
+    if (options.startYear) queryParams.append('startYear', options.startYear);
+    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
+    if (options.endYear) queryParams.append('endYear', options.endYear);
+    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/usage-history/aggregated${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Generate sample usage history data
+   * @param {string} lineId - Telecom line ID
+   * @param {number} months - Number of months to generate
+   * @returns {Promise} - Resolved with generated usage history
+   */
+  generateSampleData: async (lineId, months = 6) => {
+    const response = await fetch(`${API_URL}/usage-history/generate/${lineId}?months=${months}`, {
+      method: 'POST',
+      headers: createHeaders()
+    });
+
     return handleResponse(response);
   }
 };
@@ -371,6 +513,7 @@ export {
   authService,
   telecomService,
   aiRecommendationsService,
+  usageHistoryService,
   getToken,
   getUser,
   setToken,

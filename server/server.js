@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 // Load environment variables
 dotenv.config();
 
-// Import routes (to be created)
+// Import routes
 const authRoutes = require('./routes/auth.routes');
 const telecomRoutes = require('./routes/telecom.routes');
 const costControlRoutes = require('./routes/costControl.routes');
@@ -13,6 +13,7 @@ const analyticsRoutes = require('./routes/analytics.routes');
 const serviceManagementRoutes = require('./routes/serviceManagement.routes');
 const aiRecommendationsRoutes = require('./routes/aiRecommendations.routes');
 const notificationsRoutes = require('./routes/notifications.routes');
+const usageHistoryRoutes = require('./routes/usageHistory.routes');
 
 // Create Express app
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/service-management', serviceManagementRoutes);
 app.use('/api/ai-recommendations', aiRecommendationsRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/usage-history', usageHistoryRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
