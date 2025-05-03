@@ -508,12 +508,242 @@ const usageHistoryService = {
   }
 };
 
+/**
+ * Analytics API
+ */
+const analyticsService = {
+  /**
+   * Get usage trends
+   * @param {Object} options - Query options (period, groupBy, startYear, startMonth, endYear, endMonth)
+   * @returns {Promise} - Resolved with usage trend data
+   */
+  getUsageTrends: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.period) queryParams.append('period', options.period);
+    if (options.groupBy) queryParams.append('groupBy', options.groupBy);
+    if (options.startYear) queryParams.append('startYear', options.startYear);
+    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
+    if (options.endYear) queryParams.append('endYear', options.endYear);
+    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/analytics/usage-trends${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost breakdown
+   * @param {Object} options - Query options (period, startYear, startMonth, endYear, endMonth)
+   * @returns {Promise} - Resolved with cost breakdown data
+   */
+  getCostBreakdown: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.period) queryParams.append('period', options.period);
+    if (options.startYear) queryParams.append('startYear', options.startYear);
+    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
+    if (options.endYear) queryParams.append('endYear', options.endYear);
+    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/analytics/cost-breakdown${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get usage by line
+   * @param {Object} options - Query options (period, startYear, startMonth, endYear, endMonth)
+   * @returns {Promise} - Resolved with usage by line data
+   */
+  getUsageByLine: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.period) queryParams.append('period', options.period);
+    if (options.startYear) queryParams.append('startYear', options.startYear);
+    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
+    if (options.endYear) queryParams.append('endYear', options.endYear);
+    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/analytics/usage-by-line${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get usage anomalies
+   * @param {Object} options - Query options (threshold)
+   * @returns {Promise} - Resolved with usage anomalies data
+   */
+  getUsageAnomalies: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.threshold) queryParams.append('threshold', options.threshold);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/analytics/usage-anomalies${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost optimization opportunities
+   * @returns {Promise} - Resolved with cost optimization opportunities
+   */
+  getCostOptimizationOpportunities: async () => {
+    const response = await fetch(`${API_URL}/analytics/cost-optimization`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Generate sample cost data
+   * @param {number} months - Number of months to generate
+   * @returns {Promise} - Resolved with generated cost data
+   */
+  generateSampleCostData: async (months = 6) => {
+    const response = await fetch(`${API_URL}/analytics/generate-sample-cost?months=${months}`, {
+      method: 'POST',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  }
+};
+
+/**
+ * Cost Control API
+ */
+const costControlService = {
+  /**
+   * Get all budgets
+   * @param {Object} options - Query options (limit, offset, startYear, startMonth, endYear, endMonth)
+   * @returns {Promise} - Resolved with budget data
+   */
+  getAllBudgets: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.limit) queryParams.append('limit', options.limit);
+    if (options.offset) queryParams.append('offset', options.offset);
+    if (options.startYear) queryParams.append('startYear', options.startYear);
+    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
+    if (options.endYear) queryParams.append('endYear', options.endYear);
+    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/cost-control/budgets${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get budget for a specific month and year
+   * @param {string} month - Month (Jan, Feb, etc.)
+   * @param {number} year - Year
+   * @returns {Promise} - Resolved with budget data
+   */
+  getBudget: async (month, year) => {
+    const response = await fetch(`${API_URL}/cost-control/budgets/${month}/${year}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Set budget for a specific month and year
+   * @param {string} month - Month (Jan, Feb, etc.)
+   * @param {number} year - Year
+   * @param {Object} budgetData - Budget data
+   * @returns {Promise} - Resolved with updated budget data
+   */
+  setBudget: async (month, year, budgetData) => {
+    const response = await fetch(`${API_URL}/cost-control/budgets/${month}/${year}`, {
+      method: 'POST',
+      headers: createHeaders(),
+      body: JSON.stringify(budgetData)
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost alerts
+   * @returns {Promise} - Resolved with cost alerts
+   */
+  getCostAlerts: async () => {
+    const response = await fetch(`${API_URL}/cost-control/alerts`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get budget alert threshold
+   * @returns {Promise} - Resolved with alert threshold
+   */
+  getBudgetAlertThreshold: async () => {
+    const response = await fetch(`${API_URL}/cost-control/alert-threshold`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Set budget alert threshold
+   * @param {number} threshold - Alert threshold percentage (0-100)
+   * @returns {Promise} - Resolved with updated user settings
+   */
+  setBudgetAlertThreshold: async (threshold) => {
+    const response = await fetch(`${API_URL}/cost-control/alert-threshold`, {
+      method: 'POST',
+      headers: createHeaders(),
+      body: JSON.stringify({ threshold })
+    });
+
+    return handleResponse(response);
+  }
+};
+
 // Export all services
 export {
   authService,
   telecomService,
   aiRecommendationsService,
   usageHistoryService,
+  analyticsService,
+  costControlService,
   getToken,
   getUser,
   setToken,

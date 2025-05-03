@@ -117,6 +117,20 @@ CREATE TABLE IF NOT EXISTS notifications (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- User settings table
+CREATE TABLE IF NOT EXISTS user_settings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  budget_alert_threshold INT DEFAULT 80,
+  data_alert_threshold INT DEFAULT 80,
+  notification_email BOOLEAN DEFAULT TRUE,
+  notification_sms BOOLEAN DEFAULT FALSE,
+  notification_app BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- Insert sample data for service plans
 INSERT INTO service_plans (name, data_limit, calls, sms, price) VALUES
 ('Business Economy', 5, 'Unlimited', '100', 15),
