@@ -190,30 +190,6 @@ class User {
    */
   static async saveRefreshToken(userId, refreshToken) {
     try {
-      // Check if refresh_tokens table exists
-      const [tables] = await pool.execute(`
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = DATABASE()
-        AND table_name = 'refresh_tokens'
-      `);
-
-      // Create table if it doesn't exist
-      if (tables.length === 0) {
-        await pool.execute(`
-          CREATE TABLE refresh_tokens (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            token VARCHAR(255) NOT NULL,
-            expires_at TIMESTAMP NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            INDEX idx_user_id (user_id),
-            INDEX idx_token (token)
-          )
-        `);
-      }
-
       // Calculate expiration (7 days from now)
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7);

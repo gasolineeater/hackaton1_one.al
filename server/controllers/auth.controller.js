@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const config = require('../config/config');
 const logger = require('../utils/logger');
-const { success, error, unauthorized, notFound, badRequest } = require('../utils/apiResponse');
+const apiResponse = require('../utils/apiResponse');
 
 /**
  * Generate JWT token
@@ -77,7 +77,7 @@ exports.register = async (req, res) => {
     }, 'User registered successfully', 201);
   } catch (err) {
     logger.error('Error in register:', err);
-    return error(res, err.message);
+    return apiResponse.error(res, err.message);
   }
 };
 
@@ -92,13 +92,13 @@ exports.login = async (req, res) => {
     // Find user by email
     const user = await User.findByEmail(req.body.email);
     if (!user) {
-      return notFound(res, 'User not found!');
+      return apiResponse.notFound(res, 'User not found!');
     }
 
     // Validate password
     const isPasswordValid = await User.validatePassword(req.body.password, user.password);
     if (!isPasswordValid) {
-      return unauthorized(res, 'Invalid password!');
+      return apiResponse.unauthorized(res, 'Invalid password!');
     }
 
     // Generate tokens
@@ -109,7 +109,7 @@ exports.login = async (req, res) => {
     await User.saveRefreshToken(user.id, refreshToken);
 
     // Return user data and tokens
-    return success(res, {
+    return apiResponse.success(res, {
       id: user.id,
       username: user.username,
       email: user.email,
@@ -120,7 +120,7 @@ exports.login = async (req, res) => {
     }, 'Login successful');
   } catch (err) {
     logger.error('Error in login:', err);
-    return error(res, err.message);
+    return apiResponse.error(res, err.message);
   }
 };
 
@@ -134,11 +134,11 @@ exports.profile = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     if (!user) {
-      return notFound(res, 'User not found!');
+      return apiResponse.notFound(res, 'User not found!');
     }
 
     // Return user data (excluding password)
-    return success(res, {
+    return apiResponse.success(res, {
       id: user.id,
       username: user.username,
       email: user.email,
@@ -149,7 +149,7 @@ exports.profile = async (req, res) => {
     }, 'User profile retrieved successfully');
   } catch (err) {
     logger.error('Error in profile:', err);
-    return error(res, err.message);
+    return apiResponse.error(res, err.message);
   }
 };
 
@@ -164,7 +164,7 @@ exports.refreshToken = async (req, res) => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return badRequest(res, 'Refresh token is required');
+      return apiResponse.badRequest(res, 'Refresh token is required');
     }
 
     // Verify refresh token
@@ -172,24 +172,24 @@ exports.refreshToken = async (req, res) => {
     try {
       decoded = jwt.verify(refreshToken, config.auth.jwtSecret);
     } catch (err) {
-      return unauthorized(res, 'Invalid refresh token');
+      return apiResponse.unauthorized(res, 'Invalid refresh token');
     }
 
     // Check if token is a refresh token
     if (!decoded.type || decoded.type !== 'refresh') {
-      return unauthorized(res, 'Invalid token type');
+      return apiResponse.unauthorized(res, 'Invalid token type');
     }
 
     // Find user
     const user = await User.findById(decoded.id);
     if (!user) {
-      return notFound(res, 'User not found');
+      return apiResponse.notFound(res, 'User not found');
     }
 
     // Check if refresh token is valid
     const isValidToken = await User.verifyRefreshToken(user.id, refreshToken);
     if (!isValidToken) {
-      return unauthorized(res, 'Invalid refresh token');
+      return apiResponse.unauthorized(res, 'Invalid refresh token');
     }
 
     // Generate new tokens
@@ -200,13 +200,13 @@ exports.refreshToken = async (req, res) => {
     await User.updateRefreshToken(user.id, refreshToken, newRefreshToken);
 
     // Return new tokens
-    return success(res, {
+    return apiResponse.success(res, {
       accessToken,
       refreshToken: newRefreshToken
     }, 'Token refreshed successfully');
   } catch (err) {
     logger.error('Error in refreshToken:', err);
-    return error(res, err.message);
+    return apiResponse.error(res, err.message);
   }
 };
 
@@ -221,7 +221,7 @@ exports.logout = async (req, res) => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return badRequest(res, 'Refresh token is required');
+      return apiResponse.badRequest(res, 'Refresh token is required');
     }
 
     // Verify refresh token
@@ -230,15 +230,15 @@ exports.logout = async (req, res) => {
       decoded = jwt.verify(refreshToken, config.auth.jwtSecret);
     } catch (err) {
       // If token is invalid, just return success
-      return success(res, null, 'Logged out successfully');
+      return apiResponse.success(res, null, 'Logged out successfully');
     }
 
     // Invalidate refresh token
     await User.invalidateRefreshToken(decoded.id, refreshToken);
 
-    return success(res, null, 'Logged out successfully');
+    return apiResponse.success(res, null, 'Logged out successfully');
   } catch (err) {
     logger.error('Error in logout:', err);
-    return error(res, err.message);
+    return apiResponse.error(res, err.message);
   }
 };

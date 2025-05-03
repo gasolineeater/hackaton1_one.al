@@ -25,7 +25,23 @@ const login = {
   })
 };
 
+// Refresh token validation schema
+const refreshToken = {
+  body: Joi.object().keys({
+    refreshToken: Joi.string().required()
+  })
+};
+
+// Logout validation schema
+const logout = {
+  body: Joi.object().keys({
+    refreshToken: Joi.string().required()
+  })
+};
+
 module.exports = {
   register,
-  login
+  login,
+  refreshToken,
+  logout
 };

@@ -13,10 +13,10 @@ router.post('/register', validate(authValidation.register), authController.regis
 router.post('/login', validate(authValidation.login), authController.login);
 
 // Refresh token
-router.post('/refresh-token', authController.refreshToken);
+router.post('/refresh-token', validate(authValidation.refreshToken), authController.refreshToken);
 
 // Logout user
-router.post('/logout', authController.logout);
+router.post('/logout', validate(authValidation.logout), authController.logout);
 
 // Get user profile (protected route)
 router.get('/profile', verifyToken, authController.profile);

@@ -1,6 +1,8 @@
 const express = require('express');
 const serviceManagementController = require('../controllers/serviceManagement.controller');
 const { verifyToken } = require('../middleware/auth.middleware');
+const { validate } = require('../middleware/validate.middleware');
+const serviceManagementValidation = require('../validations/serviceManagement.validation');
 
 const router = express.Router();
 
@@ -20,21 +22,21 @@ router.post('/initialize', serviceManagementController.initializeDefaultServices
 router.get('/usage', serviceManagementController.getServiceUsage);
 
 // Get service by ID
-router.get('/:id', serviceManagementController.getServiceById);
+router.get('/:id', validate(serviceManagementValidation.getService), serviceManagementController.getServiceById);
 
 // Create a new service
-router.post('/', serviceManagementController.createService);
+router.post('/', validate(serviceManagementValidation.createService), serviceManagementController.createService);
 
 // Update service
-router.put('/:id', serviceManagementController.updateService);
+router.put('/:id', validate(serviceManagementValidation.updateService), serviceManagementController.updateService);
 
 // Delete service
-router.delete('/:id', serviceManagementController.deleteService);
+router.delete('/:id', validate(serviceManagementValidation.deleteService), serviceManagementController.deleteService);
 
 // Enable service
-router.put('/:id/enable', serviceManagementController.enableService);
+router.put('/:id/enable', validate(serviceManagementValidation.enableService), serviceManagementController.enableService);
 
 // Disable service
-router.put('/:id/disable', serviceManagementController.disableService);
+router.put('/:id/disable', validate(serviceManagementValidation.disableService), serviceManagementController.disableService);
 
 module.exports = router;
