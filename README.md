@@ -20,7 +20,58 @@ ONE Albania wants a unified, intelligent digital dashboard for SMEs that helps t
 
 ## 🚀 Quick Start
 
-See [INSTALL.md](INSTALL.md) for detailed installation and setup instructions.
+### Prerequisites
+- Node.js (v14 or higher)
+- MySQL (v8 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/your-username/one-albania-sme-dashboard.git
+cd one-albania-sme-dashboard
+```
+
+2. Install dependencies
+```bash
+# Install backend dependencies
+cd server
+npm install
+
+# Install frontend dependencies
+cd ..
+npm install
+```
+
+3. Set up environment variables
+```bash
+# In the server directory, create a .env file with the following variables
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=one_albania_db
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRATION=24h
+```
+
+4. Initialize the database
+```bash
+cd server
+npm run init-db
+```
+
+5. Start the development servers
+```bash
+# Start backend server
+cd server
+npm run dev
+
+# In a new terminal, start frontend server
+cd ..
+npm start
+```
 
 ## 📊 Features
 
@@ -38,11 +89,20 @@ Get personalized suggestions to optimize services and reduce costs.
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React with Vite
+### Frontend
+- **Framework**: React with Vite
 - **UI Library**: Material UI
 - **State Management**: React Context API
 - **Charts & Visualization**: Recharts
 - **Routing**: React Router
+
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MySQL
+- **Authentication**: JWT
+- **API Documentation**: Swagger/OpenAPI
+- **Testing**: Jest & Supertest
 
 ## 🧠 Architecture
 
@@ -60,6 +120,22 @@ Our application follows a modern frontend architecture:
 ## 📝 Development
 
 For development guidelines, see [HACKATHON_GUIDE.md](HACKATHON_GUIDE.md).
+
+### API Documentation
+
+API documentation is available at `/api-docs` when the server is running. It provides detailed information about all available endpoints, request/response formats, and authentication requirements.
+
+### Testing
+
+```bash
+# Run backend tests
+cd server
+npm test
+
+# Run test coverage
+cd server
+npm run test:coverage
+```
 
 ## 🔄 Git Workflow
 

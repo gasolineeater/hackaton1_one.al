@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const { setupSwagger } = require('./config/swagger');
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +28,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to ONE Albania SME Dashboard API.' });
 });
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 // API routes
 app.use('/api/auth', authRoutes);

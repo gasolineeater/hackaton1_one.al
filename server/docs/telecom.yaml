@@ -1,0 +1,504 @@
+components:
+  schemas:
+    TelecomLine:
+      type: object
+      required:
+        - phone_number
+        - assigned_to
+        - plan_id
+      properties:
+        id:
+          type: integer
+          description: Line ID
+        phone_number:
+          type: string
+          description: Phone number
+        assigned_to:
+          type: string
+          description: Person or department the line is assigned to
+        plan_id:
+          type: integer
+          description: Service plan ID
+        monthly_limit:
+          type: number
+          description: Monthly data limit in GB
+        current_usage:
+          type: number
+          description: Current data usage in GB
+        status:
+          type: string
+          enum: [active, suspended, terminated]
+          description: Line status
+        user_id:
+          type: integer
+          description: User ID who owns this line
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+      example:
+        id: 1
+        phone_number: "+355691234567"
+        assigned_to: "John Doe"
+        plan_id: 2
+        monthly_limit: 10
+        current_usage: 5.2
+        status: "active"
+        user_id: 1
+        created_at: "2023-01-01T00:00:00.000Z"
+        updated_at: "2023-01-01T00:00:00.000Z"
+    
+    ServicePlan:
+      type: object
+      required:
+        - name
+        - data_limit
+        - price
+      properties:
+        id:
+          type: integer
+          description: Plan ID
+        name:
+          type: string
+          description: Plan name
+        data_limit:
+          type: number
+          description: Data limit in GB
+        calls:
+          type: number
+          description: Call minutes
+        sms:
+          type: number
+          description: SMS count
+        price:
+          type: number
+          description: Monthly price
+        features:
+          type: array
+          items:
+            type: string
+          description: Plan features
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+      example:
+        id: 1
+        name: "Business Pro"
+        data_limit: 20
+        calls: 1000
+        sms: 500
+        price: 29.99
+        features: ["Roaming", "International Calls", "5G"]
+        created_at: "2023-01-01T00:00:00.000Z"
+        updated_at: "2023-01-01T00:00:00.000Z"
+    
+    TelecomLineResponse:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TelecomLine'
+        totalCount:
+          type: integer
+          description: Total count of lines
+        limit:
+          type: integer
+          description: Limit per page
+        offset:
+          type: integer
+          description: Offset for pagination
+      example:
+        lines: [
+          {
+            id: 1,
+            phone_number: "+355691234567",
+            assigned_to: "John Doe",
+            plan_id: 2,
+            monthly_limit: 10,
+            current_usage: 5.2,
+            status: "active",
+            user_id: 1
+          }
+        ]
+        totalCount: 1
+        limit: 10
+        offset: 0
+    
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+      example:
+        message: "Telecom line not found!"
+
+paths:
+  /telecom/lines:
+    get:
+      tags:
+        - Telecom
+      summary: Get all telecom lines
+      description: Get all telecom lines for the authenticated user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Number of items to return
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: Number of items to skip
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search term for phone number or assigned to
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, suspended, terminated]
+          description: Filter by status
+      responses:
+        '200':
+          description: List of telecom lines
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelecomLineResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    post:
+      tags:
+        - Telecom
+      summary: Create a new telecom line
+      description: Create a new telecom line for the authenticated user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone_number
+                - assigned_to
+                - plan_id
+              properties:
+                phone_number:
+                  type: string
+                  description: Phone number
+                assigned_to:
+                  type: string
+                  description: Person or department the line is assigned to
+                plan_id:
+                  type: integer
+                  description: Service plan ID
+                monthly_limit:
+                  type: number
+                  description: Monthly data limit in GB
+                current_usage:
+                  type: number
+                  description: Current data usage in GB
+                status:
+                  type: string
+                  enum: [active, suspended, terminated]
+                  description: Line status
+      responses:
+        '201':
+          description: Telecom line created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelecomLine'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /telecom/lines/{id}:
+    get:
+      tags:
+        - Telecom
+      summary: Get telecom line by ID
+      description: Get a specific telecom line by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Telecom line ID
+      responses:
+        '200':
+          description: Telecom line
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelecomLine'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Telecom line not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    put:
+      tags:
+        - Telecom
+      summary: Update telecom line
+      description: Update a specific telecom line
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Telecom line ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_number:
+                  type: string
+                  description: Phone number
+                assigned_to:
+                  type: string
+                  description: Person or department the line is assigned to
+                plan_id:
+                  type: integer
+                  description: Service plan ID
+                monthly_limit:
+                  type: number
+                  description: Monthly data limit in GB
+                current_usage:
+                  type: number
+                  description: Current data usage in GB
+                status:
+                  type: string
+                  enum: [active, suspended, terminated]
+                  description: Line status
+      responses:
+        '200':
+          description: Telecom line updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelecomLine'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Telecom line not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      tags:
+        - Telecom
+      summary: Delete telecom line
+      description: Delete a specific telecom line
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Telecom line ID
+      responses:
+        '200':
+          description: Telecom line deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Telecom line deleted successfully!"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Telecom line not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /telecom/plans:
+    get:
+      tags:
+        - Telecom
+      summary: Get all service plans
+      description: Get all available service plans
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of service plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServicePlan'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /telecom/plans/{id}:
+    get:
+      tags:
+        - Telecom
+      summary: Get service plan by ID
+      description: Get a specific service plan by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Service plan ID
+      responses:
+        '200':
+          description: Service plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicePlan'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Service plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
