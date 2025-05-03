@@ -177,17 +177,18 @@ const DashboardHome = () => {
   return (
     <Box>
       {/* Welcome Banner with Carousel */}
-      <Card
-        elevation={0}
+      <Box
         sx={{
           mb: 4,
           borderRadius: 2,
           overflow: 'hidden',
-          position: 'relative'
+          position: 'relative',
+          mx: { xs: -1, sm: -2, md: -3 },
+          mt: { xs: -3, sm: -3, md: -3 }
         }}
       >
         {loading ? (
-          <Skeleton variant="rectangular" width="100%" height={300} animation="wave" />
+          <Skeleton variant="rectangular" width="100%" height={450} animation="wave" />
         ) : (
           <>
             {promotionalBanners.map((banner, index) => (
@@ -200,20 +201,42 @@ const DashboardHome = () => {
                 >
                   <Box
                     sx={{
-                      height: { xs: 300, md: 400 },
+                      height: { xs: 350, sm: 400, md: 450 },
                       backgroundImage: `linear-gradient(to right, ${banner.color}CC, ${banner.color}33), url(${banner.imageUrl})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
                       display: 'flex',
                       alignItems: 'center',
-                      px: 4
+                      px: { xs: 2, sm: 4, md: 6 }
                     }}
                   >
-                    <Box sx={{ maxWidth: 600, color: 'white', zIndex: 1 }}>
-                      <Typography variant="h3" className="mont-bold" gutterBottom>
+                    <Box sx={{
+                      maxWidth: { xs: '100%', md: 600 },
+                      color: 'white',
+                      zIndex: 1,
+                      width: '100%'
+                    }}>
+                      <Typography
+                        variant="h2"
+                        className="mont-bold"
+                        gutterBottom
+                        sx={{
+                          fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
+                          textShadow: '0 2px 10px rgba(0,0,0,0.2)'
+                        }}
+                      >
                         {banner.title}
                       </Typography>
-                      <Typography variant="h6" className="co-text" sx={{ mb: 3 }}>
+                      <Typography
+                        variant="h5"
+                        className="co-text"
+                        sx={{
+                          mb: 4,
+                          maxWidth: { xs: '100%', md: '80%' },
+                          textShadow: '0 1px 5px rgba(0,0,0,0.2)',
+                          fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' }
+                        }}
+                      >
                         {banner.description}
                       </Typography>
                       <Button
@@ -222,14 +245,19 @@ const DashboardHome = () => {
                         size="large"
                         className="mont-semibold"
                         sx={{
-                          px: 4,
-                          py: 1.5,
+                          px: { xs: 3, sm: 4, md: 5 },
+                          py: { xs: 1, sm: 1.5, md: 2 },
                           borderRadius: 2,
                           backgroundColor: 'white',
                           color: banner.color,
+                          fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
                           '&:hover': {
                             backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          }
+                            transform: 'translateY(-3px)',
+                            boxShadow: '0 8px 15px rgba(0,0,0,0.1)'
+                          },
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                         }}
                       >
                         {banner.buttonText}
@@ -242,7 +270,7 @@ const DashboardHome = () => {
             <Box
               sx={{
                 position: 'absolute',
-                bottom: 16,
+                bottom: { xs: 20, sm: 24, md: 30 },
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
@@ -253,13 +281,18 @@ const DashboardHome = () => {
                 <Box
                   key={index}
                   sx={{
-                    width: 12,
-                    height: 12,
+                    width: { xs: 12, sm: 14, md: 16 },
+                    height: { xs: 12, sm: 14, md: 16 },
                     borderRadius: '50%',
-                    mx: 0.5,
+                    mx: 1,
                     bgcolor: index === activeStep ? 'white' : 'rgba(255, 255, 255, 0.5)',
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.2)',
+                      bgcolor: index === activeStep ? 'white' : 'rgba(255, 255, 255, 0.7)'
+                    },
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
                   }}
                   onClick={() => setActiveStep(index)}
                 />
@@ -268,7 +301,7 @@ const DashboardHome = () => {
             <IconButton
               sx={{
                 position: 'absolute',
-                left: 16,
+                left: { xs: 8, sm: 16, md: 24 },
                 top: '50%',
                 transform: 'translateY(-50%)',
                 bgcolor: 'rgba(255, 255, 255, 0.3)',
@@ -276,7 +309,9 @@ const DashboardHome = () => {
                 '&:hover': {
                   bgcolor: 'rgba(255, 255, 255, 0.5)',
                 },
-                zIndex: 2
+                zIndex: 2,
+                width: { xs: 40, sm: 48 },
+                height: { xs: 40, sm: 48 }
               }}
               onClick={handleBack}
             >
@@ -285,7 +320,7 @@ const DashboardHome = () => {
             <IconButton
               sx={{
                 position: 'absolute',
-                right: 16,
+                right: { xs: 8, sm: 16, md: 24 },
                 top: '50%',
                 transform: 'translateY(-50%)',
                 bgcolor: 'rgba(255, 255, 255, 0.3)',
@@ -293,7 +328,9 @@ const DashboardHome = () => {
                 '&:hover': {
                   bgcolor: 'rgba(255, 255, 255, 0.5)',
                 },
-                zIndex: 2
+                zIndex: 2,
+                width: { xs: 40, sm: 48 },
+                height: { xs: 40, sm: 48 }
               }}
               onClick={handleNext}
             >
@@ -301,7 +338,7 @@ const DashboardHome = () => {
             </IconButton>
           </>
         )}
-      </Card>
+      </Box>
 
       {/* Dashboard Header */}
       <Box sx={{ mb: 4 }}>
@@ -314,9 +351,9 @@ const DashboardHome = () => {
       </Box>
 
       {/* Quick Stats */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2 }}>
+      <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mb: 3 }}>
+        <Grid item xs={6} sm={6} md={3}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Lines
             </Typography>
@@ -332,8 +369,8 @@ const DashboardHome = () => {
             />
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2 }}>
+        <Grid item xs={6} sm={6} md={3}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Data Usage
             </Typography>
@@ -349,8 +386,8 @@ const DashboardHome = () => {
             />
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2 }}>
+        <Grid item xs={6} sm={6} md={3}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Monthly Cost
             </Typography>
@@ -366,8 +403,8 @@ const DashboardHome = () => {
             />
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: 2, borderRadius: 2 }}>
+        <Grid item xs={6} sm={6} md={3}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Alerts
             </Typography>
@@ -386,7 +423,7 @@ const DashboardHome = () => {
       </Grid>
 
       {/* Main Content */}
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 2, sm: 3 }}>
         {/* Usage Chart */}
         <Grid item xs={12} md={8}>
           <Card elevation={0}>
@@ -452,7 +489,7 @@ const DashboardHome = () => {
               title="Line Usage"
               titleTypographyProps={{ className: "mont-semibold" }}
             />
-            <CardContent>
+            <CardContent sx={{ px: { xs: 1, sm: 2 } }}>
               <List>
                 {telecomLines.slice(0, 4).map((line) => (
                   <React.Fragment key={line.id}>
@@ -464,7 +501,7 @@ const DashboardHome = () => {
                         primary={line.phoneNumber}
                         secondary={`${line.assignedTo} - ${line.plan}`}
                       />
-                      <Box sx={{ width: '40%', mr: 1 }}>
+                      <Box sx={{ width: { xs: '30%', sm: '40%' } }}>
                         <LinearProgress
                           variant="determinate"
                           value={(line.currentUsage / line.monthlyLimit) * 100}
@@ -478,7 +515,7 @@ const DashboardHome = () => {
                           sx={{ borderRadius: 5, height: 8 }}
                         />
                       </Box>
-                      <Typography variant="body2">
+                      <Typography variant="body2" sx={{ ml: 1, minWidth: { xs: 50, sm: 70 }, textAlign: 'right' }}>
                         {line.currentUsage}/{line.monthlyLimit} GB
                       </Typography>
                     </ListItem>
@@ -510,7 +547,7 @@ const DashboardHome = () => {
                 </Button>
               }
             />
-            <CardContent>
+            <CardContent sx={{ px: { xs: 1, sm: 2 } }}>
               <List>
                 {aiRecommendations.slice(0, 3).map((rec) => (
                   <React.Fragment key={rec.id}>
@@ -550,7 +587,7 @@ const DashboardHome = () => {
               titleTypographyProps={{ className: "mont-semibold" }}
             />
             <CardContent>
-              <Grid container spacing={2}>
+              <Grid container spacing={{ xs: 2, sm: 3 }}>
                 {usageAlerts.map((alert) => {
                   const line = telecomLines.find(l => l.id === alert.lineId);
                   return (
@@ -558,7 +595,7 @@ const DashboardHome = () => {
                       <Paper
                         elevation={0}
                         sx={{
-                          p: 2,
+                          p: { xs: 1.5, sm: 2 },
                           borderRadius: 2,
                           border: 1,
                           borderColor:
@@ -573,6 +610,9 @@ const DashboardHome = () => {
                               : alert.severity === 'warning'
                                 ? 'warning.lighter'
                                 : 'info.lighter',
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column'
                         }}
                       >
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -583,7 +623,7 @@ const DashboardHome = () => {
                             {line?.phoneNumber}
                           </Typography>
                         </Box>
-                        <Typography variant="body2" paragraph>
+                        <Typography variant="body2" sx={{ mb: 2, flexGrow: 1 }}>
                           {alert.message}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
