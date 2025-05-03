@@ -56,6 +56,7 @@ const CostOptimization = ({ recommendations, loading }) => {
 
   // Calculate total potential savings
   const calculateTotalSavings = () => {
+    if (!recommendations || !Array.isArray(recommendations)) return 0;
     return recommendations.reduce((total, rec) => total + (rec.potential_savings || 0), 0);
   };
 
@@ -95,7 +96,7 @@ const CostOptimization = ({ recommendations, loading }) => {
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
             <CircularProgress />
           </Box>
-        ) : recommendations.length === 0 ? (
+        ) : !recommendations || !Array.isArray(recommendations) || recommendations.length === 0 ? (
           <Paper sx={{ p: 3, textAlign: 'center' }}>
             <Typography variant="body1" color="text.secondary">
               No optimization recommendations available at this time.
@@ -128,89 +129,89 @@ const CostOptimization = ({ recommendations, loading }) => {
                         variant="outlined"
                       />
                     </Box>
-                    
+
                     <Typography variant="body1" paragraph>
                       {recommendation.message}
                     </Typography>
-                    
+
                     <Divider sx={{ my: 2 }} />
-                    
+
                     {recommendation.type === 'data_plan_downgrade' && (
                       <List dense>
                         <ListItem>
-                          <ListItemText 
-                            primary="Line" 
-                            secondary={`${recommendation.phone_number} (${recommendation.assigned_to})`} 
+                          <ListItemText
+                            primary="Line"
+                            secondary={`${recommendation.phone_number} (${recommendation.assigned_to})`}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="Current Plan" 
-                            secondary={recommendation.current_plan} 
+                          <ListItemText
+                            primary="Current Plan"
+                            secondary={recommendation.current_plan}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="Data Limit" 
-                            secondary={`${recommendation.current_data_limit} GB`} 
+                          <ListItemText
+                            primary="Data Limit"
+                            secondary={`${recommendation.current_data_limit} GB`}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="Average Data Used" 
-                            secondary={`${recommendation.avg_data_used.toFixed(2)} GB`} 
+                          <ListItemText
+                            primary="Average Data Used"
+                            secondary={`${recommendation.avg_data_used.toFixed(2)} GB`}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="Maximum Data Used" 
-                            secondary={`${recommendation.max_data_used.toFixed(2)} GB`} 
+                          <ListItemText
+                            primary="Maximum Data Used"
+                            secondary={`${recommendation.max_data_used.toFixed(2)} GB`}
                           />
                         </ListItem>
                       </List>
                     )}
-                    
+
                     {recommendation.type === 'shared_data_plan' && (
                       <List dense>
                         <ListItem>
-                          <ListItemText 
-                            primary="Department" 
-                            secondary={recommendation.department} 
+                          <ListItemText
+                            primary="Department"
+                            secondary={recommendation.department}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="Number of Lines" 
-                            secondary={recommendation.line_count} 
+                          <ListItemText
+                            primary="Number of Lines"
+                            secondary={recommendation.line_count}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="Total Cost" 
-                            secondary={formatCurrency(recommendation.total_cost)} 
+                          <ListItemText
+                            primary="Total Cost"
+                            secondary={formatCurrency(recommendation.total_cost)}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="Cost Per Line" 
-                            secondary={formatCurrency(recommendation.cost_per_line)} 
+                          <ListItemText
+                            primary="Cost Per Line"
+                            secondary={formatCurrency(recommendation.cost_per_line)}
                           />
                         </ListItem>
                       </List>
                     )}
-                    
+
                     {recommendation.type === 'international_calling_plan' && (
                       <List dense>
                         <ListItem>
-                          <ListItemText 
-                            primary="Line" 
-                            secondary={`${recommendation.phone_number} (${recommendation.assigned_to})`} 
+                          <ListItemText
+                            primary="Line"
+                            secondary={`${recommendation.phone_number} (${recommendation.assigned_to})`}
                           />
                         </ListItem>
                         <ListItem>
-                          <ListItemText 
-                            primary="International Calls Cost" 
-                            secondary={formatCurrency(recommendation.international_calls_cost)} 
+                          <ListItemText
+                            primary="International Calls Cost"
+                            secondary={formatCurrency(recommendation.international_calls_cost)}
                           />
                         </ListItem>
                       </List>

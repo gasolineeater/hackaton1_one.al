@@ -50,13 +50,13 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
   const handleEntityTypeChange = async (event) => {
     const entityType = event.target.value;
     setFormData({ ...formData, entity_type: entityType, entity_id: '', entity_name: '' });
-    
+
     if (entityType === 'line' || entityType === 'department') {
       setLoadingEntities(true);
       try {
         const response = await telecomService.getAllLines();
         const telecomLines = response.data.lines || [];
-        
+
         if (entityType === 'line') {
           setLines(telecomLines);
         } else if (entityType === 'department') {
@@ -76,7 +76,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
   const handleEntityChange = (event) => {
     const entityId = event.target.value;
     let entityName = '';
-    
+
     if (formData.entity_type === 'line') {
       const selectedLine = lines.find(line => line.id.toString() === entityId.toString());
       if (selectedLine) {
@@ -90,7 +90,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
     } else if (formData.entity_type === 'company') {
       entityName = 'Company-wide';
     }
-    
+
     setFormData({ ...formData, entity_id: entityId, entity_name: entityName });
   };
 
@@ -146,13 +146,13 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
     if (!formData.entity_name || !formData.amount) {
       return;
     }
-    
+
     // If entity type is company, set entity_id to null
     const budgetData = { ...formData };
     if (budgetData.entity_type === 'company') {
       budgetData.entity_id = null;
     }
-    
+
     // Save budget
     await onSave(budgetData, !!selectedBudget);
     handleCloseDialog();
@@ -282,7 +282,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                     <TableCell>{formatCurrency(budget.amount, budget.currency)}</TableCell>
                     <TableCell>{budget.period}</TableCell>
                     <TableCell>{budget.alert_threshold}%</TableCell>
-                    <TableCell>{new Date(budget.start_date).toLocaleDateString()}</TableCell>
+                    <TableCell>{budget.start_date ? new Date(budget.start_date).toLocaleDateString() : 'N/A'}</TableCell>
                     <TableCell>
                       {budget.end_date ? new Date(budget.end_date).toLocaleDateString() : 'N/A'}
                     </TableCell>
@@ -332,7 +332,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 <MenuItem value="company">Company-wide</MenuItem>
               </TextField>
             </Grid>
-            
+
             {formData.entity_type !== 'company' && (
               <Grid item xs={12} md={6}>
                 <TextField
@@ -363,7 +363,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 </TextField>
               </Grid>
             )}
-            
+
             {formData.entity_type === 'company' && (
               <Grid item xs={12} md={6}>
                 <TextField
@@ -375,7 +375,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 />
               </Grid>
             )}
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 label="Budget Amount"
@@ -388,7 +388,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 inputProps={{ min: 0, step: 0.01 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -404,7 +404,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 <MenuItem value="yearly">Yearly</MenuItem>
               </TextField>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 select
@@ -419,7 +419,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 <MenuItem value="ALL">ALL</MenuItem>
               </TextField>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 label="Alert Threshold (%)"
@@ -431,7 +431,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 inputProps={{ min: 1, max: 100 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 label="Start Date"
@@ -444,7 +444,7 @@ const BudgetManagement = ({ budgets, spendingSummary, onSave, onDelete, loading 
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 label="End Date"

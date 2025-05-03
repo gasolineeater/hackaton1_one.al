@@ -35,26 +35,26 @@ const CostControl = () => {
       try {
         // Get budgets
         const budgetsResponse = await budgetService.getAllBudgets();
-        setBudgets(budgetsResponse.data.budgets || []);
+        setBudgets(budgetsResponse?.data?.budgets || []);
 
         // Get spending summary
         const summaryResponse = await budgetService.getSpendingSummary();
-        setSpendingSummary(summaryResponse.data.summary || null);
+        setSpendingSummary(summaryResponse?.data?.summary || null);
 
         // Get cost breakdowns
         const now = new Date();
         const year = now.getFullYear();
         const month = now.getMonth() + 1;
         const breakdownsResponse = await costControlService.getAllCostBreakdowns({ year, month });
-        setCostBreakdowns(breakdownsResponse.data.costBreakdowns || []);
+        setCostBreakdowns(breakdownsResponse?.data?.costBreakdowns || []);
 
         // Get cost trends
         const trendsResponse = await costControlService.getCostTrends(12);
-        setCostTrends(trendsResponse.data.trends || []);
+        setCostTrends(trendsResponse?.data?.trends || []);
 
         // Get recommendations
         const recommendationsResponse = await costControlService.getOptimizationRecommendations();
-        setRecommendations(recommendationsResponse.data.recommendations || []);
+        setRecommendations(recommendationsResponse?.data?.recommendations || []);
 
         setError(null);
       } catch (err) {
@@ -78,7 +78,7 @@ const CostControl = () => {
     setLoading(true);
     try {
       const response = await budgetService.checkThresholds();
-      const exceededBudgets = response.data.exceededBudgets || [];
+      const exceededBudgets = response?.data?.exceededBudgets || [];
 
       if (exceededBudgets.length > 0) {
         setSuccess(`${exceededBudgets.length} budget(s) have exceeded their thresholds.`);
@@ -88,7 +88,7 @@ const CostControl = () => {
 
       // Refresh spending summary
       const summaryResponse = await budgetService.getSpendingSummary();
-      setSpendingSummary(summaryResponse.data.summary || null);
+      setSpendingSummary(summaryResponse?.data?.summary || null);
 
       setError(null);
     } catch (err) {
@@ -115,14 +115,14 @@ const CostControl = () => {
 
       // Refresh budgets
       const budgetsResponse = await budgetService.getAllBudgets();
-      setBudgets(budgetsResponse.data.budgets || []);
+      setBudgets(budgetsResponse?.data?.budgets || []);
 
       // Refresh spending summary
       const summaryResponse = await budgetService.getSpendingSummary();
-      setSpendingSummary(summaryResponse.data.summary || null);
+      setSpendingSummary(summaryResponse?.data?.summary || null);
 
       setError(null);
-      return response.data.budget;
+      return response?.data?.budget;
     } catch (err) {
       console.error('Error saving budget:', err);
       setError('Failed to save budget. Please try again later.');
@@ -140,11 +140,11 @@ const CostControl = () => {
 
       // Refresh budgets
       const budgetsResponse = await budgetService.getAllBudgets();
-      setBudgets(budgetsResponse.data.budgets || []);
+      setBudgets(budgetsResponse?.data?.budgets || []);
 
       // Refresh spending summary
       const summaryResponse = await budgetService.getSpendingSummary();
-      setSpendingSummary(summaryResponse.data.summary || null);
+      setSpendingSummary(summaryResponse?.data?.summary || null);
 
       setSuccess('Budget deleted successfully.');
       setError(null);
@@ -164,7 +164,7 @@ const CostControl = () => {
 
       // Refresh cost breakdowns
       const breakdownsResponse = await costControlService.getAllCostBreakdowns({ year, month });
-      setCostBreakdowns(breakdownsResponse.data.costBreakdowns || []);
+      setCostBreakdowns(breakdownsResponse?.data?.costBreakdowns || []);
 
       setSuccess('Cost breakdown generated successfully.');
       setError(null);

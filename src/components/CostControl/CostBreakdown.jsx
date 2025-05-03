@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Paper,
@@ -20,14 +20,14 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -63,12 +63,18 @@ const CostBreakdown = ({ costBreakdowns, costTrends, onGenerateBreakdown, loadin
     loadBreakdownData(newValue);
   };
 
+  // Load breakdown data when component mounts or when year/month changes
+  useEffect(() => {
+    loadBreakdownData(breakdownType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year, month, breakdownType]);
+
   // Load breakdown data based on type
   const loadBreakdownData = async (type) => {
     setLoadingBreakdown(true);
     try {
       let response;
-      
+
       switch (type) {
         case 0: // By Category
           response = await costControlService.getCostByCategory(year, month);
@@ -108,17 +114,24 @@ const CostBreakdown = ({ costBreakdowns, costTrends, onGenerateBreakdown, loadin
   // Prepare data for category pie chart
   const prepareCategoryData = () => {
     if (!categoryBreakdown) return [];
-    
+
+    // Ensure all properties exist and are numbers
+    const dataCost = typeof categoryBreakdown.data_cost === 'number' ? categoryBreakdown.data_cost : 0;
+    const callsCost = typeof categoryBreakdown.calls_cost === 'number' ? categoryBreakdown.calls_cost : 0;
+    const smsCost = typeof categoryBreakdown.sms_cost === 'number' ? categoryBreakdown.sms_cost : 0;
+    const otherCost = typeof categoryBreakdown.other_cost === 'number' ? categoryBreakdown.other_cost : 0;
+
     return [
-      { name: 'Data', value: categoryBreakdown.data_cost || 0 },
-      { name: 'Calls', value: categoryBreakdown.calls_cost || 0 },
-      { name: 'SMS', value: categoryBreakdown.sms_cost || 0 },
-      { name: 'Other', value: categoryBreakdown.other_cost || 0 }
+      { name: 'Data', value: dataCost },
+      { name: 'Calls', value: callsCost },
+      { name: 'SMS', value: smsCost },
+      { name: 'Other', value: otherCost }
     ].filter(item => item.value > 0);
   };
 
   // Prepare data for cost trends chart
   const prepareTrendData = () => {
+    if (!costTrends || !Array.isArray(costTrends)) return [];
     return costTrends.map(trend => ({
       name: `${trend.year}-${trend.month}`,
       data: trend.data_cost || 0,
@@ -194,7 +207,7 @@ const CostBreakdown = ({ costBreakdowns, costTrends, onGenerateBreakdown, loadin
             Cost Trends (Last 12 Months)
           </Typography>
           <Box sx={{ height: 400 }}>
-            {costTrends.length === 0 ? (
+            {!costTrends || !Array.isArray(costTrends) || costTrends.length === 0 ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                 <Typography variant="body1" color="text.secondary">
                   No trend data available
@@ -309,7 +322,7 @@ const CostBreakdown = ({ costBreakdowns, costTrends, onGenerateBreakdown, loadin
                               <TableCell>Data</TableCell>
                               <TableCell align="right">{formatCurrency(categoryBreakdown.data_cost || 0)}</TableCell>
                               <TableCell align="right">
-                                {categoryBreakdown.total_cost ? 
+                                {categoryBreakdown.total_cost ?
                                   ((categoryBreakdown.data_cost / categoryBreakdown.total_cost) * 100).toFixed(1) : 0}%
                               </TableCell>
                             </TableRow>
@@ -317,7 +330,7 @@ const CostBreakdown = ({ costBreakdowns, costTrends, onGenerateBreakdown, loadin
                               <TableCell>Calls</TableCell>
                               <TableCell align="right">{formatCurrency(categoryBreakdown.calls_cost || 0)}</TableCell>
                               <TableCell align="right">
-                                {categoryBreakdown.total_cost ? 
+                                {categoryBreakdown.total_cost ?
                                   ((categoryBreakdown.calls_cost / categoryBreakdown.total_cost) * 100).toFixed(1) : 0}%
                               </TableCell>
                             </TableRow>
@@ -325,7 +338,7 @@ const CostBreakdown = ({ costBreakdowns, costTrends, onGenerateBreakdown, loadin
                               <TableCell>SMS</TableCell>
                               <TableCell align="right">{formatCurrency(categoryBreakdown.sms_cost || 0)}</TableCell>
                               <TableCell align="right">
-                                {categoryBreakdown.total_cost ? 
+                                {categoryBreakdown.total_cost ?
                                   ((categoryBreakdown.sms_cost / categoryBreakdown.total_cost) * 100).toFixed(1) : 0}%
                               </TableCell>
                             </TableRow>
@@ -333,7 +346,7 @@ const CostBreakdown = ({ costBreakdowns, costTrends, onGenerateBreakdown, loadin
                               <TableCell>Other</TableCell>
                               <TableCell align="right">{formatCurrency(categoryBreakdown.other_cost || 0)}</TableCell>
                               <TableCell align="right">
-                                {categoryBreakdown.total_cost ? 
+                                {categoryBreakdown.total_cost ?
                                   ((categoryBreakdown.other_cost / categoryBreakdown.total_cost) * 100).toFixed(1) : 0}%
                               </TableCell>
                             </TableRow>
