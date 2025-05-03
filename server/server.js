@@ -20,6 +20,7 @@ dotenv.config();
 const authRoutes = require('./routes/auth.routes');
 const telecomRoutes = require('./routes/telecom.routes');
 const costControlRoutes = require('./routes/costControl.routes');
+const budgetRoutes = require('./routes/budget.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
 const serviceManagementRoutes = require('./routes/serviceManagement.routes');
 const aiRecommendationsRoutes = require('./routes/aiRecommendations.routes');
@@ -65,6 +66,7 @@ app.use('/api/auth', authRoutes);
 // Apply caching to read-heavy routes
 app.use('/api/telecom', cacheMiddleware(300), telecomRoutes); // 5 minutes cache
 app.use('/api/cost-control', cacheMiddleware(300), costControlRoutes); // 5 minutes cache
+app.use('/api/budget', cacheMiddleware(300), budgetRoutes); // 5 minutes cache
 app.use('/api/analytics', cacheMiddleware(300), analyticsRoutes); // 5 minutes cache
 app.use('/api/service-management', cacheMiddleware(300), serviceManagementRoutes); // 5 minutes cache
 app.use('/api/ai-recommendations', cacheMiddleware(300), aiRecommendationsRoutes); // 5 minutes cache

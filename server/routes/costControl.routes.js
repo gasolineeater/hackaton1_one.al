@@ -1,28 +1,39 @@
 const express = require('express');
-const costControlController = require('../controllers/costControl.controller');
+const costBreakdownController = require('../controllers/costBreakdown.controller');
 const { verifyToken } = require('../middleware/auth.middleware');
+const { validate } = require('../middleware/validate.middleware');
+const costControlValidation = require('../validations/costControl.validation');
 
 const router = express.Router();
 
 // Apply authentication middleware to all routes
 router.use(verifyToken);
 
-// Get all budgets
-router.get('/budgets', costControlController.getAllBudgets);
+// Get all cost breakdowns
+router.get('/breakdowns', costBreakdownController.getAllCostBreakdowns);
 
-// Get budget for a specific month and year
-router.get('/budgets/:month/:year', costControlController.getBudget);
+// Get cost breakdown by ID
+router.get('/breakdowns/:id', validate(costControlValidation.getCostBreakdown), costBreakdownController.getCostBreakdownById);
 
-// Set budget for a specific month and year
-router.post('/budgets/:month/:year', costControlController.setBudget);
+// Generate cost breakdown for a month
+router.post('/breakdowns/:year/:month', validate(costControlValidation.generateCostBreakdown), costBreakdownController.generateForMonth);
 
-// Get cost alerts
-router.get('/alerts', costControlController.getCostAlerts);
+// Get cost trends
+router.get('/trends', costBreakdownController.getCostTrends);
 
-// Get budget alert threshold
-router.get('/alert-threshold', costControlController.getBudgetAlertThreshold);
+// Get cost breakdown by category
+router.get('/by-category', costBreakdownController.getCostByCategory);
 
-// Set budget alert threshold
-router.post('/alert-threshold', costControlController.setBudgetAlertThreshold);
+// Get cost breakdown by line
+router.get('/by-line', costBreakdownController.getCostByLine);
+
+// Get cost breakdown by department
+router.get('/by-department', costBreakdownController.getCostByDepartment);
+
+// Export financial report
+router.get('/export', costBreakdownController.exportFinancialReport);
+
+// Get cost optimization recommendations
+router.get('/recommendations', costBreakdownController.getOptimizationRecommendations);
 
 module.exports = router;

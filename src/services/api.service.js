@@ -634,27 +634,23 @@ const analyticsService = {
 };
 
 /**
- * Cost Control API
+ * Budget API
  */
-const costControlService = {
+const budgetService = {
   /**
    * Get all budgets
-   * @param {Object} options - Query options (limit, offset, startYear, startMonth, endYear, endMonth)
-   * @returns {Promise} - Resolved with budget data
+   * @param {Object} options - Query options (entityType, period)
+   * @returns {Promise} - Resolved with budgets data
    */
   getAllBudgets: async (options = {}) => {
     const queryParams = new URLSearchParams();
 
-    if (options.limit) queryParams.append('limit', options.limit);
-    if (options.offset) queryParams.append('offset', options.offset);
-    if (options.startYear) queryParams.append('startYear', options.startYear);
-    if (options.startMonth) queryParams.append('startMonth', options.startMonth);
-    if (options.endYear) queryParams.append('endYear', options.endYear);
-    if (options.endMonth) queryParams.append('endMonth', options.endMonth);
+    if (options.entityType) queryParams.append('entityType', options.entityType);
+    if (options.period) queryParams.append('period', options.period);
 
     const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
 
-    const response = await fetch(`${API_URL}/cost-control/budgets${queryString}`, {
+    const response = await fetch(`${API_URL}/budget${queryString}`, {
       method: 'GET',
       headers: createHeaders()
     });
@@ -663,13 +659,12 @@ const costControlService = {
   },
 
   /**
-   * Get budget for a specific month and year
-   * @param {string} month - Month (Jan, Feb, etc.)
-   * @param {number} year - Year
+   * Get budget by ID
+   * @param {string} id - Budget ID
    * @returns {Promise} - Resolved with budget data
    */
-  getBudget: async (month, year) => {
-    const response = await fetch(`${API_URL}/cost-control/budgets/${month}/${year}`, {
+  getBudgetById: async (id) => {
+    const response = await fetch(`${API_URL}/budget/${id}`, {
       method: 'GET',
       headers: createHeaders()
     });
@@ -678,14 +673,12 @@ const costControlService = {
   },
 
   /**
-   * Set budget for a specific month and year
-   * @param {string} month - Month (Jan, Feb, etc.)
-   * @param {number} year - Year
+   * Create a new budget
    * @param {Object} budgetData - Budget data
-   * @returns {Promise} - Resolved with updated budget data
+   * @returns {Promise} - Resolved with created budget
    */
-  setBudget: async (month, year, budgetData) => {
-    const response = await fetch(`${API_URL}/cost-control/budgets/${month}/${year}`, {
+  createBudget: async (budgetData) => {
+    const response = await fetch(`${API_URL}/budget`, {
       method: 'POST',
       headers: createHeaders(),
       body: JSON.stringify(budgetData)
@@ -695,41 +688,213 @@ const costControlService = {
   },
 
   /**
-   * Get cost alerts
-   * @returns {Promise} - Resolved with cost alerts
+   * Update budget
+   * @param {string} id - Budget ID
+   * @param {Object} budgetData - Updated budget data
+   * @returns {Promise} - Resolved with updated budget
    */
-  getCostAlerts: async () => {
-    const response = await fetch(`${API_URL}/cost-control/alerts`, {
-      method: 'GET',
-      headers: createHeaders()
-    });
-
-    return handleResponse(response);
-  },
-
-  /**
-   * Get budget alert threshold
-   * @returns {Promise} - Resolved with alert threshold
-   */
-  getBudgetAlertThreshold: async () => {
-    const response = await fetch(`${API_URL}/cost-control/alert-threshold`, {
-      method: 'GET',
-      headers: createHeaders()
-    });
-
-    return handleResponse(response);
-  },
-
-  /**
-   * Set budget alert threshold
-   * @param {number} threshold - Alert threshold percentage (0-100)
-   * @returns {Promise} - Resolved with updated user settings
-   */
-  setBudgetAlertThreshold: async (threshold) => {
-    const response = await fetch(`${API_URL}/cost-control/alert-threshold`, {
-      method: 'POST',
+  updateBudget: async (id, budgetData) => {
+    const response = await fetch(`${API_URL}/budget/${id}`, {
+      method: 'PUT',
       headers: createHeaders(),
-      body: JSON.stringify({ threshold })
+      body: JSON.stringify(budgetData)
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Delete budget
+   * @param {string} id - Budget ID
+   * @returns {Promise} - Resolved with success message
+   */
+  deleteBudget: async (id) => {
+    const response = await fetch(`${API_URL}/budget/${id}`, {
+      method: 'DELETE',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Check budget thresholds
+   * @returns {Promise} - Resolved with exceeded budgets
+   */
+  checkThresholds: async () => {
+    const response = await fetch(`${API_URL}/budget/check/thresholds`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get spending summary
+   * @param {string} period - Period ('monthly', 'quarterly', 'yearly')
+   * @returns {Promise} - Resolved with spending summary
+   */
+  getSpendingSummary: async (period = 'monthly') => {
+    const response = await fetch(`${API_URL}/budget/summary/spending?period=${period}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  }
+};
+
+/**
+ * Cost Control API
+ */
+const costControlService = {
+  /**
+   * Get all cost breakdowns
+   * @param {Object} options - Query options (year, month, limit, offset)
+   * @returns {Promise} - Resolved with cost breakdowns data
+   */
+  getAllCostBreakdowns: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.year) queryParams.append('year', options.year);
+    if (options.month) queryParams.append('month', options.month);
+    if (options.limit) queryParams.append('limit', options.limit);
+    if (options.offset) queryParams.append('offset', options.offset);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/cost-control/breakdowns${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost breakdown by ID
+   * @param {string} id - Cost breakdown ID
+   * @returns {Promise} - Resolved with cost breakdown data
+   */
+  getCostBreakdownById: async (id) => {
+    const response = await fetch(`${API_URL}/cost-control/breakdowns/${id}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Generate cost breakdown for a month
+   * @param {number} year - Year
+   * @param {number} month - Month (1-12)
+   * @returns {Promise} - Resolved with generated cost breakdown
+   */
+  generateCostBreakdown: async (year, month) => {
+    const response = await fetch(`${API_URL}/cost-control/breakdowns/${year}/${month}`, {
+      method: 'POST',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost trends
+   * @param {number} months - Number of months to include
+   * @returns {Promise} - Resolved with cost trends data
+   */
+  getCostTrends: async (months = 12) => {
+    const response = await fetch(`${API_URL}/cost-control/trends?months=${months}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost breakdown by category
+   * @param {number} year - Year
+   * @param {number} month - Month (1-12)
+   * @returns {Promise} - Resolved with cost breakdown by category
+   */
+  getCostByCategory: async (year, month) => {
+    const response = await fetch(`${API_URL}/cost-control/by-category?year=${year}&month=${month}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost breakdown by line
+   * @param {number} year - Year
+   * @param {number} month - Month (1-12)
+   * @returns {Promise} - Resolved with cost breakdown by line
+   */
+  getCostByLine: async (year, month) => {
+    const response = await fetch(`${API_URL}/cost-control/by-line?year=${year}&month=${month}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get cost breakdown by department
+   * @param {number} year - Year
+   * @param {number} month - Month (1-12)
+   * @returns {Promise} - Resolved with cost breakdown by department
+   */
+  getCostByDepartment: async (year, month) => {
+    const response = await fetch(`${API_URL}/cost-control/by-department?year=${year}&month=${month}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Export financial report
+   * @param {string} format - Export format ('csv', 'json')
+   * @param {string} type - Report type ('monthly', 'line', 'department')
+   * @param {number} year - Year
+   * @param {number} month - Month (1-12, required for line and department reports)
+   * @returns {Promise} - Resolved with download URL
+   */
+  exportFinancialReport: async (format = 'csv', type = 'monthly', year, month) => {
+    const queryParams = new URLSearchParams();
+
+    queryParams.append('format', format);
+    queryParams.append('type', type);
+    queryParams.append('year', year);
+
+    if (month) {
+      queryParams.append('month', month);
+    }
+
+    const queryString = queryParams.toString();
+
+    // Use window.open to trigger file download
+    window.open(`${API_URL}/cost-control/export?${queryString}`);
+
+    return { success: true, message: 'Export initiated' };
+  },
+
+  /**
+   * Get cost optimization recommendations
+   * @returns {Promise} - Resolved with recommendations
+   */
+  getOptimizationRecommendations: async () => {
+    const response = await fetch(`${API_URL}/cost-control/recommendations`, {
+      method: 'GET',
+      headers: createHeaders()
     });
 
     return handleResponse(response);
@@ -1032,6 +1197,7 @@ export {
   aiRecommendationsService,
   usageHistoryService,
   analyticsService,
+  budgetService,
   costControlService,
   notificationsService,
   serviceManagementService,
