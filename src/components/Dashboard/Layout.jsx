@@ -1,31 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Toolbar, CssBaseline } from '@mui/material';
 import Header from './Header';
-import Sidebar from './Sidebar';
-
-const drawerWidth = 240;
 
 const Layout = ({ children }) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        width: '100vw',
+        maxWidth: '100%',
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden'
+      }}
+    >
       <CssBaseline />
-      <Header onDrawerToggle={handleDrawerToggle} />
-      <Sidebar open={mobileOpen} onClose={handleDrawerToggle} />
+      <Header />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
-          backgroundColor: '#f5f5f5',
-          minHeight: '100vh'
+          p: 0,
+          m: 0,
+          width: '100%',
+          backgroundColor: '#F8F9FA',
+          minHeight: '100vh',
+          overflow: 'hidden'
         }}
       >
         <Toolbar />

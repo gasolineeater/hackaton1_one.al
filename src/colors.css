@@ -1,0 +1,270 @@
+/* ONE Albania Colors CSS */
+
+:root {
+  /* Primary Colors */
+  --one-purple: #6A1B9A;
+  --one-purple-dark: #38006b;
+  --one-purple-light: #9C4DCC;
+  --one-purple-gradient: linear-gradient(45deg, #6A1B9A 30%, #9C4DCC 90%);
+  
+  /* Secondary Colors */
+  --one-lavender: #9575CD;
+  --one-lavender-dark: #65499C;
+  --one-lavender-light: #C7A4FF;
+  --one-lavender-gradient: linear-gradient(45deg, #9575CD 30%, #C7A4FF 90%);
+  
+  /* Accent Colors */
+  --one-indigo: #3F51B5;
+  --one-indigo-dark: #303F9F;
+  --one-indigo-light: #7986CB;
+  --one-indigo-gradient: linear-gradient(45deg, #3F51B5 30%, #7986CB 90%);
+  
+  /* Functional Colors */
+  --one-success: #4CAF50;
+  --one-success-dark: #388E3C;
+  --one-success-light: #81C784;
+  --one-success-gradient: linear-gradient(45deg, #4CAF50 30%, #81C784 90%);
+  
+  --one-warning: #FF9800;
+  --one-warning-dark: #F57C00;
+  --one-warning-light: #FFB74D;
+  --one-warning-gradient: linear-gradient(45deg, #FF9800 30%, #FFB74D 90%);
+  
+  --one-error: #F44336;
+  --one-error-dark: #D32F2F;
+  --one-error-light: #E57373;
+  --one-error-gradient: linear-gradient(45deg, #F44336 30%, #E57373 90%);
+  
+  /* Neutral Colors */
+  --one-white: #FFFFFF;
+  --one-off-white: #F8F9FA;
+  --one-gray-lightest: #F2F2F2;
+  --one-gray-lighter: #E6E6E6;
+  --one-gray-light: #D9D9D9;
+  --one-gray: #CCCCCC;
+  --one-gray-medium: #999999;
+  --one-gray-dark: #666666;
+  --one-gray-darker: #333333;
+  --one-gray-darkest: #1A1A1A;
+  --one-black: #000000;
+}
+
+/* Background Colors */
+.bg-primary {
+  background-color: var(--one-purple) !important;
+  color: white !important;
+}
+
+.bg-secondary {
+  background-color: var(--one-lavender) !important;
+  color: white !important;
+}
+
+.bg-warning {
+  background-color: var(--one-warning) !important;
+  color: white !important;
+}
+
+.bg-success {
+  background-color: var(--one-success) !important;
+  color: white !important;
+}
+
+.bg-error {
+  background-color: var(--one-error) !important;
+  color: white !important;
+}
+
+.bg-light {
+  background-color: var(--one-off-white) !important;
+}
+
+.bg-white {
+  background-color: var(--one-white) !important;
+}
+
+/* Text Colors */
+.text-primary {
+  color: var(--one-purple) !important;
+}
+
+.text-secondary {
+  color: var(--one-lavender) !important;
+}
+
+.text-warning {
+  color: var(--one-warning) !important;
+}
+
+.text-success {
+  color: var(--one-success) !important;
+}
+
+.text-error {
+  color: var(--one-error) !important;
+}
+
+.text-dark {
+  color: var(--one-gray-darker) !important;
+}
+
+.text-muted {
+  color: var(--one-gray-dark) !important;
+}
+
+.text-white {
+  color: var(--one-white) !important;
+}
+
+/* Gradient Backgrounds */
+.bg-gradient-primary {
+  background: var(--one-purple-gradient) !important;
+  color: white !important;
+}
+
+.bg-gradient-secondary {
+  background: var(--one-lavender-gradient) !important;
+  color: white !important;
+}
+
+.bg-gradient-warning {
+  background: var(--one-warning-gradient) !important;
+  color: white !important;
+}
+
+.bg-gradient-success {
+  background: var(--one-success-gradient) !important;
+  color: white !important;
+}
+
+.bg-gradient-error {
+  background: var(--one-error-gradient) !important;
+  color: white !important;
+}
+
+/* Border Colors */
+.border-primary {
+  border-color: var(--one-purple) !important;
+}
+
+.border-secondary {
+  border-color: var(--one-lavender) !important;
+}
+
+.border-warning {
+  border-color: var(--one-warning) !important;
+}
+
+.border-success {
+  border-color: var(--one-success) !important;
+}
+
+.border-error {
+  border-color: var(--one-error) !important;
+}
+
+.border-light {
+  border-color: var(--one-gray-light) !important;
+}
+
+/* Custom ONE Albania Components */
+.one-card {
+  border-radius: 8px;
+  background-color: var(--one-white);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--one-gray-lighter);
+  overflow: hidden;
+}
+
+.one-button-primary {
+  background: var(--one-purple-gradient);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.one-button-primary:hover {
+  background: var(--one-purple);
+  opacity: 0.9;
+}
+
+.one-button-secondary {
+  background: var(--one-lavender-gradient);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.one-button-secondary:hover {
+  background: var(--one-lavender);
+  opacity: 0.9;
+}
+
+.one-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+}
+
+.one-badge-primary {
+  background-color: var(--one-purple);
+  color: white;
+}
+
+.one-badge-secondary {
+  background-color: var(--one-lavender);
+  color: white;
+}
+
+.one-badge-warning {
+  background-color: var(--one-warning);
+  color: white;
+}
+
+.one-badge-success {
+  background-color: var(--one-success);
+  color: white;
+}
+
+.one-badge-error {
+  background-color: var(--one-error);
+  color: white;
+}
+
+/* Utility Classes */
+.shadow-sm {
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+.shadow-lg {
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.rounded {
+  border-radius: 4px !important;
+}
+
+.rounded-lg {
+  border-radius: 8px !important;
+}
+
+.rounded-pill {
+  border-radius: 30px !important;
+}
