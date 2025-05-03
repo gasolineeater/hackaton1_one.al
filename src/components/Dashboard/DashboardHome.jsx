@@ -183,8 +183,8 @@ const DashboardHome = () => {
           borderRadius: 0,
           overflow: 'hidden',
           position: 'relative',
-          mx: { xs: '4px', sm: '8px', md: '12px' }, // Just a little space on the sides
-          mt: { xs: -3, sm: -3, md: -3 }
+          mx: 0, // No horizontal margin for true edge-to-edge
+          mt: { xs: 2, sm: 3, md: 4 } // Added positive margin to move slider down
         }}
       >
         {loading ? (
@@ -343,32 +343,56 @@ const DashboardHome = () => {
       {/* Dashboard Header */}
       <Box
         sx={{
-          mb: 4,
+          mb: 5,
           mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 }     // Add padding inside to maintain content alignment
+          px: { xs: 2, sm: 3, md: 4 },     // Match footer padding
+          textAlign: 'center'
         }}
       >
-        <Typography variant="h4" gutterBottom className="mont-bold">
+        <Typography variant="h3" gutterBottom className="mont-bold" sx={{
+          mb: 2,
+          background: 'linear-gradient(45deg, #6A1B9A 30%, #9575CD 90%)',
+          backgroundClip: 'text',
+          textFillColor: 'transparent',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
           Dashboard
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" className="co-text" sx={{ mb: 2 }}>
+        <Typography variant="h6" color="text.secondary" className="co-text" sx={{
+          mb: 3,
+          maxWidth: '800px',
+          mx: 'auto'
+        }}>
           Welcome to your ONE Albania SME Dashboard. Here's an overview of your telecom services.
         </Typography>
       </Box>
 
       {/* Quick Stats */}
-      <Grid
-        container
-        spacing={{ xs: 2, sm: 3 }}
-        sx={{
+      <Box sx={{
+        mb: 5,
+        mx: 0,
+        px: { xs: 2, sm: 3, md: 4 },
+        width: '100%'
+      }}>
+        <Typography variant="h5" className="mont-bold" sx={{
           mb: 3,
-          mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 },    // Add padding inside to maintain content alignment
-          width: 'auto'                    // Allow grid to extend beyond its container
-        }}
-      >
+          textAlign: 'center',
+          color: '#6A1B9A'
+        }}>
+          Quick Overview
+        </Typography>
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3 }}
+          sx={{
+            mx: 0,
+            width: '100%',
+            justifyContent: 'center'
+          }}
+        >
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Lines
             </Typography>
@@ -385,7 +409,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Data Usage
             </Typography>
@@ -402,7 +426,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Monthly Cost
             </Typography>
@@ -419,7 +443,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Alerts
             </Typography>
@@ -436,17 +460,31 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
       </Grid>
+      </Box>
 
       {/* Main Content */}
-      <Grid
-        container
-        spacing={{ xs: 2, sm: 3 }}
-        sx={{
-          mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 },    // Add padding inside to maintain content alignment
-          width: 'auto'                    // Allow grid to extend beyond its container
-        }}
-      >
+      <Box sx={{
+        mb: 5,
+        mx: 0,
+        px: { xs: 2, sm: 3, md: 4 },
+        width: '100%'
+      }}>
+        <Typography variant="h5" className="mont-bold" sx={{
+          mb: 3,
+          textAlign: 'center',
+          color: '#6A1B9A'
+        }}>
+          Service Analytics
+        </Typography>
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3 }}
+          sx={{
+            mx: 0,
+            width: '100%',
+            justifyContent: 'center'
+          }}
+        >
         {/* Usage Chart */}
         <Grid item xs={12} md={8}>
           <Card elevation={0} sx={{ borderRadius: 0 }}>
@@ -512,7 +550,7 @@ const DashboardHome = () => {
               title="Line Usage"
               titleTypographyProps={{ className: "mont-semibold" }}
             />
-            <CardContent sx={{ px: { xs: 1, sm: 2 } }}>
+            <CardContent sx={{ px: { xs: 2, sm: 3 } }}>
               <List>
                 {telecomLines.slice(0, 4).map((line) => (
                   <React.Fragment key={line.id}>
@@ -570,7 +608,7 @@ const DashboardHome = () => {
                 </Button>
               }
             />
-            <CardContent sx={{ px: { xs: 1, sm: 2 } }}>
+            <CardContent sx={{ px: { xs: 2, sm: 3 } }}>
               <List>
                 {aiRecommendations.slice(0, 3).map((rec) => (
                   <React.Fragment key={rec.id}>
@@ -618,7 +656,7 @@ const DashboardHome = () => {
                       <Paper
                         elevation={0}
                         sx={{
-                          p: { xs: 1.5, sm: 2 },
+                          p: { xs: 2, sm: 3 },
                           borderRadius: 0,
                           border: 1,
                           borderColor:
@@ -661,6 +699,7 @@ const DashboardHome = () => {
           </Card>
         </Grid>
       </Grid>
+      </Box>
 
       {/* News & Updates Section */}
       <Box
@@ -668,7 +707,7 @@ const DashboardHome = () => {
           mt: 6,
           mb: 4,
           mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 }     // Add padding inside to maintain content alignment
+          px: { xs: 2, sm: 3, md: 4 }     // Match footer padding
         }}
       >
         <Typography variant="h5" gutterBottom className="mont-bold">
@@ -808,8 +847,10 @@ const DashboardHome = () => {
           py: 6,
           bgcolor: 'primary.dark',
           color: 'white',
-          borderRadius: 2,
-          px: 4
+          borderRadius: 0,
+          px: { xs: 2, sm: 3, md: 4 },
+          mx: 0, // No margin for true edge-to-edge
+          width: '100%'
         }}
       >
         <Grid container spacing={4}>
