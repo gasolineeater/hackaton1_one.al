@@ -1,47 +1,35 @@
 import React from 'react';
-import { 
-  AppBar, 
-  Box, 
-  Toolbar, 
-  IconButton, 
-  Typography, 
-  Menu, 
-  MenuItem, 
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
   Avatar,
-  Badge,
   Tooltip
 } from '@mui/material';
-import { 
+import {
   Menu as MenuIcon,
-  Notifications as NotificationsIcon,
   AccountCircle,
   Settings as SettingsIcon
 } from '@mui/icons-material';
+import NotificationCenter from '../Notifications/NotificationCenter';
 
 const Header = ({ onDrawerToggle }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [notificationsAnchorEl, setNotificationsAnchorEl] = React.useState(null);
-
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  const handleNotificationsMenuOpen = (event) => {
-    setNotificationsAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
-  const handleNotificationsMenuClose = () => {
-    setNotificationsAnchorEl(null);
-  };
-
   return (
-    <AppBar 
-      position="fixed" 
-      sx={{ 
+    <AppBar
+      position="fixed"
+      sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
         backgroundColor: 'white',
         color: 'text.primary',
@@ -58,28 +46,18 @@ const Header = ({ onDrawerToggle }) => {
         >
           <MenuIcon />
         </IconButton>
-        
+
         <Box sx={{ flexGrow: 1 }} />
-        
+
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title="Notifications">
-            <IconButton 
-              size="large" 
-              color="inherit"
-              onClick={handleNotificationsMenuOpen}
-            >
-              <Badge badgeContent={4} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-          
+          <NotificationCenter />
+
           <Tooltip title="Settings">
             <IconButton size="large" color="inherit">
               <SettingsIcon />
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title="Account">
             <IconButton
               size="large"
@@ -96,7 +74,7 @@ const Header = ({ onDrawerToggle }) => {
           </Tooltip>
         </Box>
       </Toolbar>
-      
+
       {/* Profile Menu */}
       <Menu
         anchorEl={anchorEl}
@@ -109,43 +87,8 @@ const Header = ({ onDrawerToggle }) => {
         <MenuItem onClick={handleMenuClose}>My account</MenuItem>
         <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
       </Menu>
-      
-      {/* Notifications Menu */}
-      <Menu
-        anchorEl={notificationsAnchorEl}
-        open={Boolean(notificationsAnchorEl)}
-        onClose={handleNotificationsMenuClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        PaperProps={{
-          sx: { width: 320, maxHeight: 400 }
-        }}
-      >
-        <MenuItem>
-          <Box>
-            <Typography variant="subtitle2">Data limit reached</Typography>
-            <Typography variant="body2" color="text.secondary">Line +355 69 234 5678 has reached 90% of data limit</Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem>
-          <Box>
-            <Typography variant="subtitle2">Payment reminder</Typography>
-            <Typography variant="body2" color="text.secondary">Your monthly invoice is due in 3 days</Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem>
-          <Box>
-            <Typography variant="subtitle2">New plan available</Typography>
-            <Typography variant="body2" color="text.secondary">Check out our new Business Ultimate plan</Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem>
-          <Box>
-            <Typography variant="subtitle2">Service update</Typography>
-            <Typography variant="body2" color="text.secondary">Roaming services have been activated</Typography>
-          </Box>
-        </MenuItem>
-      </Menu>
+
+
     </AppBar>
   );
 };

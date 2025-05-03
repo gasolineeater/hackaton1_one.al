@@ -736,6 +736,151 @@ const costControlService = {
   }
 };
 
+/**
+ * Notifications API
+ */
+const notificationsService = {
+  /**
+   * Get all notifications
+   * @param {Object} options - Query options (limit, offset, read, type)
+   * @returns {Promise} - Resolved with notifications data
+   */
+  getAllNotifications: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.limit) queryParams.append('limit', options.limit);
+    if (options.offset) queryParams.append('offset', options.offset);
+    if (options.read !== undefined) queryParams.append('read', options.read);
+    if (options.type) queryParams.append('type', options.type);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/notifications${queryString}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get notification by ID
+   * @param {string} id - Notification ID
+   * @returns {Promise} - Resolved with notification data
+   */
+  getNotificationById: async (id) => {
+    const response = await fetch(`${API_URL}/notifications/${id}`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Create a new notification
+   * @param {Object} notificationData - Notification data
+   * @returns {Promise} - Resolved with created notification
+   */
+  createNotification: async (notificationData) => {
+    const response = await fetch(`${API_URL}/notifications`, {
+      method: 'POST',
+      headers: createHeaders(),
+      body: JSON.stringify(notificationData)
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Mark notification as read
+   * @param {string} id - Notification ID
+   * @returns {Promise} - Resolved with updated notification
+   */
+  markAsRead: async (id) => {
+    const response = await fetch(`${API_URL}/notifications/${id}/read`, {
+      method: 'PUT',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Mark all notifications as read
+   * @returns {Promise} - Resolved with success message
+   */
+  markAllAsRead: async () => {
+    const response = await fetch(`${API_URL}/notifications/read-all`, {
+      method: 'PUT',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Delete notification
+   * @param {string} id - Notification ID
+   * @returns {Promise} - Resolved with success message
+   */
+  deleteNotification: async (id) => {
+    const response = await fetch(`${API_URL}/notifications/${id}`, {
+      method: 'DELETE',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Delete all notifications
+   * @param {Object} options - Query options (read)
+   * @returns {Promise} - Resolved with success message
+   */
+  deleteAllNotifications: async (options = {}) => {
+    const queryParams = new URLSearchParams();
+
+    if (options.read !== undefined) queryParams.append('read', options.read);
+
+    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+
+    const response = await fetch(`${API_URL}/notifications${queryString}`, {
+      method: 'DELETE',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Get unread notification count
+   * @returns {Promise} - Resolved with unread count
+   */
+  getUnreadCount: async () => {
+    const response = await fetch(`${API_URL}/notifications/unread-count`, {
+      method: 'GET',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  },
+
+  /**
+   * Generate sample notifications
+   * @param {number} count - Number of notifications to generate
+   * @returns {Promise} - Resolved with generated notifications
+   */
+  generateSampleNotifications: async (count = 5) => {
+    const response = await fetch(`${API_URL}/notifications/generate-sample?count=${count}`, {
+      method: 'POST',
+      headers: createHeaders()
+    });
+
+    return handleResponse(response);
+  }
+};
+
 // Export all services
 export {
   authService,
@@ -744,6 +889,7 @@ export {
   usageHistoryService,
   analyticsService,
   costControlService,
+  notificationsService,
   getToken,
   getUser,
   setToken,
