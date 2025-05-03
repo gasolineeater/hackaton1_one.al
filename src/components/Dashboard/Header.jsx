@@ -84,16 +84,39 @@ const Header = () => {
         backgroundColor: '#6A1B9A', // ONE Albania violet/purple
         color: 'white',
         boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.1)',
-        borderRadius: 0
+        borderRadius: 0,
+        padding: 0,
+        minHeight: '80px'
       }}
     >
-      <Toolbar>
-        {/* Logo and Brand */}
-        <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-          <BusinessIcon sx={{ mr: 1 }} />
-          <Typography variant="h6" component="div" className="mont-bold">
-            ONE Albania
-          </Typography>
+      <Toolbar sx={{
+        p: 0,
+        m: 0,
+        minHeight: '80px', // Set a fixed height for the toolbar
+        '&.MuiToolbar-root': { paddingLeft: 0 },
+        display: 'flex',
+        alignItems: 'center' // Center items vertically
+      }}>
+        {/* Logo */}
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mr: 2,
+          p: 0,
+          ml: 0,
+          position: 'relative',
+          left: 0
+        }}>
+          <img
+            src="/onelogo1.svg"
+            alt="ONE Albania Logo"
+            style={{
+              height: '75px',
+              marginLeft: '-8px', // Negative margin to pull it to the edge
+              marginTop: 0,
+              display: 'block'
+            }}
+          />
         </Box>
 
         {/* Mobile Menu Button */}
@@ -102,13 +125,26 @@ const Header = () => {
           aria-label="open drawer"
           edge="start"
           onClick={handleMobileMenuToggle}
-          sx={{ mr: 2, display: { md: 'none' } }}
+          sx={{
+            mr: 2,
+            display: { md: 'none' },
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.1)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '8px'
+            }
+          }}
         >
           <MenuIcon />
         </IconButton>
 
         {/* Desktop Navigation */}
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+        <Box sx={{
+          display: { xs: 'none', md: 'flex' },
+          alignItems: 'center',
+          height: '100%'
+        }}>
           {menuItems.map((item) => (
             <Button
               key={item.text}
@@ -118,12 +154,37 @@ const Header = () => {
               sx={{
                 mx: 0.5,
                 opacity: location.pathname === item.path ? 1 : 0.8,
-                borderBottom: location.pathname === item.path ? '2px solid white' : 'none',
+                borderBottom: location.pathname === item.path ? '2px solid white' : '2px solid transparent',
                 borderRadius: 0,
                 paddingBottom: '6px',
+                position: 'relative',
+                transition: 'all 0.3s ease',
+                overflow: 'hidden',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: location.pathname === item.path ? 0 : '50%',
+                  width: location.pathname === item.path ? '100%' : 0,
+                  height: '2px',
+                  backgroundColor: 'white',
+                  transition: 'all 0.3s ease',
+                  transform: 'translateX(0)',
+                  opacity: location.pathname === item.path ? 1 : 0
+                },
                 '&:hover': {
                   backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  opacity: 1
+                  opacity: 1,
+                  transform: 'translateY(-3px)',
+                  borderRadius: '8px',
+                  '&::before': {
+                    width: '100%',
+                    left: 0,
+                    opacity: 1
+                  }
                 }
               }}
               className="mont-medium"
@@ -136,12 +197,24 @@ const Header = () => {
         <Box sx={{ flexGrow: 1 }} />
 
         {/* User Actions */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          height: '100%'
+        }}>
           <Tooltip title="Notifications">
             <IconButton
               size="large"
               color="inherit"
               onClick={handleNotificationsMenuOpen}
+              sx={{
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px'
+                }
+              }}
             >
               <Badge badgeContent={4} color="error">
                 <NotificationsIcon />
@@ -154,6 +227,14 @@ const Header = () => {
               size="large"
               color="inherit"
               onClick={() => navigate('/settings-page')}
+              sx={{
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px'
+                }
+              }}
             >
               <SettingsIcon />
             </IconButton>
@@ -167,6 +248,14 @@ const Header = () => {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
+              sx={{
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px'
+                }
+              }}
             >
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
                 <AccountCircle />
@@ -188,11 +277,27 @@ const Header = () => {
           }
         }}
       >
-        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
-          <BusinessIcon sx={{ color: '#6A1B9A', mr: 1 }} />
-          <Typography variant="h6" className="mont-bold" sx={{ color: '#6A1B9A' }}>
-            ONE Albania
-          </Typography>
+        <Box
+          sx={{
+            p: 0,
+            pt: 1,
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            borderBottom: '1px solid rgba(0,0,0,0.1)',
+            pl: 0
+          }}
+        >
+          <img
+            src="/onelogo1.svg"
+            alt="ONE Albania Logo"
+            style={{
+              height: '75px',
+              marginLeft: '-8px', // Negative margin to pull it to the edge
+              marginTop: 0,
+              display: 'block'
+            }}
+          />
         </Box>
         <List>
           {menuItems.map((item) => (
@@ -201,11 +306,32 @@ const Header = () => {
                 onClick={() => handleNavigation(item.path)}
                 selected={location.pathname === item.path}
                 sx={{
+                  position: 'relative',
+                  transition: 'all 0.3s ease',
+                  py: 1,
                   '&.Mui-selected': {
                     backgroundColor: 'rgba(106, 27, 154, 0.05)',
                     borderLeft: '3px solid #6A1B9A',
                   },
-                  py: 1
+                  '&:hover': {
+                    backgroundColor: 'rgba(106, 27, 154, 0.03)',
+                    transform: 'translateX(5px)',
+                    '&::after': {
+                      width: '3px',
+                      opacity: 1
+                    }
+                  },
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: location.pathname === item.path ? '3px' : 0,
+                    height: '100%',
+                    backgroundColor: '#6A1B9A',
+                    transition: 'all 0.3s ease',
+                    opacity: location.pathname === item.path ? 1 : 0
+                  }
                 }}
               >
                 <ListItemIcon sx={{ color: location.pathname === item.path ? '#6A1B9A' : 'inherit' }}>

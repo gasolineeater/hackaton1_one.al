@@ -175,15 +175,15 @@ const DashboardHome = () => {
   };
 
   return (
-    <Box>
+    <>
       {/* Welcome Banner with Carousel */}
       <Box
         sx={{
           mb: 4,
-          borderRadius: 2,
+          borderRadius: 0,
           overflow: 'hidden',
           position: 'relative',
-          mx: { xs: -1, sm: -2, md: -3 },
+          mx: { xs: '4px', sm: '8px', md: '12px' }, // Just a little space on the sides
           mt: { xs: -3, sm: -3, md: -3 }
         }}
       >
@@ -341,7 +341,13 @@ const DashboardHome = () => {
       </Box>
 
       {/* Dashboard Header */}
-      <Box sx={{ mb: 4 }}>
+      <Box
+        sx={{
+          mb: 4,
+          mx: 0, // No margin for true edge-to-edge
+          px: { xs: 1, sm: 2, md: 3 }     // Add padding inside to maintain content alignment
+        }}
+      >
         <Typography variant="h4" gutterBottom className="mont-bold">
           Dashboard
         </Typography>
@@ -351,9 +357,18 @@ const DashboardHome = () => {
       </Box>
 
       {/* Quick Stats */}
-      <Grid container spacing={{ xs: 2, sm: 3 }} sx={{ mb: 3 }}>
+      <Grid
+        container
+        spacing={{ xs: 2, sm: 3 }}
+        sx={{
+          mb: 3,
+          mx: 0, // No margin for true edge-to-edge
+          px: { xs: 1, sm: 2, md: 3 },    // Add padding inside to maintain content alignment
+          width: 'auto'                    // Allow grid to extend beyond its container
+        }}
+      >
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Lines
             </Typography>
@@ -370,7 +385,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Data Usage
             </Typography>
@@ -387,7 +402,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Monthly Cost
             </Typography>
@@ -404,7 +419,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
+          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Alerts
             </Typography>
@@ -423,10 +438,18 @@ const DashboardHome = () => {
       </Grid>
 
       {/* Main Content */}
-      <Grid container spacing={{ xs: 2, sm: 3 }}>
+      <Grid
+        container
+        spacing={{ xs: 2, sm: 3 }}
+        sx={{
+          mx: 0, // No margin for true edge-to-edge
+          px: { xs: 1, sm: 2, md: 3 },    // Add padding inside to maintain content alignment
+          width: 'auto'                    // Allow grid to extend beyond its container
+        }}
+      >
         {/* Usage Chart */}
         <Grid item xs={12} md={8}>
-          <Card elevation={0}>
+          <Card elevation={0} sx={{ borderRadius: 0 }}>
             <CardHeader
               title="Monthly Usage Trends"
               titleTypographyProps={{ className: "mont-semibold" }}
@@ -453,7 +476,7 @@ const DashboardHome = () => {
 
         {/* Cost Breakdown */}
         <Grid item xs={12} md={4}>
-          <Card elevation={0}>
+          <Card elevation={0} sx={{ borderRadius: 0 }}>
             <CardHeader
               title="Cost Breakdown"
               titleTypographyProps={{ className: "mont-semibold" }}
@@ -484,7 +507,7 @@ const DashboardHome = () => {
 
         {/* Line Usage */}
         <Grid item xs={12} md={6}>
-          <Card elevation={0}>
+          <Card elevation={0} sx={{ borderRadius: 0 }}>
             <CardHeader
               title="Line Usage"
               titleTypographyProps={{ className: "mont-semibold" }}
@@ -532,7 +555,7 @@ const DashboardHome = () => {
 
         {/* AI Recommendations */}
         <Grid item xs={12} md={6}>
-          <Card elevation={0}>
+          <Card elevation={0} sx={{ borderRadius: 0 }}>
             <CardHeader
               title="AI Recommendations"
               titleTypographyProps={{ className: "mont-semibold" }}
@@ -581,7 +604,7 @@ const DashboardHome = () => {
 
         {/* Alerts */}
         <Grid item xs={12}>
-          <Card elevation={0}>
+          <Card elevation={0} sx={{ borderRadius: 0 }}>
             <CardHeader
               title="Recent Alerts"
               titleTypographyProps={{ className: "mont-semibold" }}
@@ -596,7 +619,7 @@ const DashboardHome = () => {
                         elevation={0}
                         sx={{
                           p: { xs: 1.5, sm: 2 },
-                          borderRadius: 2,
+                          borderRadius: 0,
                           border: 1,
                           borderColor:
                             alert.severity === 'critical'
@@ -640,7 +663,14 @@ const DashboardHome = () => {
       </Grid>
 
       {/* News & Updates Section */}
-      <Box sx={{ mt: 6, mb: 4 }}>
+      <Box
+        sx={{
+          mt: 6,
+          mb: 4,
+          mx: 0, // No margin for true edge-to-edge
+          px: { xs: 1, sm: 2, md: 3 }     // Add padding inside to maintain content alignment
+        }}
+      >
         <Typography variant="h5" gutterBottom className="mont-bold">
           News & Updates
         </Typography>
@@ -655,6 +685,7 @@ const DashboardHome = () => {
                 elevation={0}
                 sx={{
                   height: '100%',
+                  borderRadius: 0,
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                   '&:hover': {
                     transform: 'translateY(-5px)',
@@ -931,7 +962,7 @@ const DashboardHome = () => {
           </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -4,18 +4,30 @@ import Header from './Header';
 
 const Layout = ({ children }) => {
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        width: '100vw',
+        maxWidth: '100%',
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden'
+      }}
+    >
       <CssBaseline />
       <Header />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          px: { xs: 1, sm: 2, md: 3 },
-          py: 3,
+          p: 0,
+          m: 0,
           width: '100%',
-          backgroundColor: '#f5f5f5',
-          minHeight: '100vh'
+          backgroundColor: '#F8F9FA',
+          minHeight: '100vh',
+          overflow: 'hidden'
         }}
       >
         <Toolbar />
