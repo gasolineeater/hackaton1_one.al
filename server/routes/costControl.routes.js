@@ -10,7 +10,7 @@ const router = express.Router();
 router.use(verifyToken);
 
 // Get all cost breakdowns
-router.get('/breakdowns', costBreakdownController.getAllCostBreakdowns);
+router.get('/breakdowns', validate(costControlValidation.getAllCostBreakdowns), costBreakdownController.getAllCostBreakdowns);
 
 // Get cost breakdown by ID
 router.get('/breakdowns/:id', validate(costControlValidation.getCostBreakdown), costBreakdownController.getCostBreakdownById);
@@ -19,21 +19,21 @@ router.get('/breakdowns/:id', validate(costControlValidation.getCostBreakdown), 
 router.post('/breakdowns/:year/:month', validate(costControlValidation.generateCostBreakdown), costBreakdownController.generateForMonth);
 
 // Get cost trends
-router.get('/trends', costBreakdownController.getCostTrends);
+router.get('/trends', validate(costControlValidation.getCostTrends), costBreakdownController.getCostTrends);
 
 // Get cost breakdown by category
-router.get('/by-category', costBreakdownController.getCostByCategory);
+router.get('/by-category', validate(costControlValidation.getCostByCategory), costBreakdownController.getCostByCategory);
 
 // Get cost breakdown by line
-router.get('/by-line', costBreakdownController.getCostByLine);
+router.get('/by-line', validate(costControlValidation.getCostByLine), costBreakdownController.getCostByLine);
 
 // Get cost breakdown by department
-router.get('/by-department', costBreakdownController.getCostByDepartment);
+router.get('/by-department', validate(costControlValidation.getCostByDepartment), costBreakdownController.getCostByDepartment);
 
 // Export financial report
-router.get('/export', costBreakdownController.exportFinancialReport);
+router.get('/export', validate(costControlValidation.exportFinancialReport), costBreakdownController.exportFinancialReport);
 
 // Get cost optimization recommendations
-router.get('/recommendations', costBreakdownController.getOptimizationRecommendations);
+router.get('/recommendations', validate(costControlValidation.getOptimizationRecommendations), costBreakdownController.getOptimizationRecommendations);
 
 module.exports = router;

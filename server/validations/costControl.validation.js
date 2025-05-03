@@ -65,6 +65,21 @@ const getCostByDepartment = {
   })
 };
 
+// Get all cost breakdowns validation schema
+const getAllCostBreakdowns = {
+  query: Joi.object().keys({
+    year: Joi.number().integer().min(2000).max(2100),
+    month: Joi.number().integer().min(1).max(12),
+    limit: Joi.number().integer().min(1).max(100),
+    offset: Joi.number().integer().min(0)
+  })
+};
+
+// Get optimization recommendations validation schema
+const getOptimizationRecommendations = {
+  query: Joi.object().keys({})
+};
+
 module.exports = {
   getCostBreakdown,
   generateCostBreakdown,
@@ -72,5 +87,7 @@ module.exports = {
   getCostTrends,
   getCostByCategory,
   getCostByLine,
-  getCostByDepartment
+  getCostByDepartment,
+  getAllCostBreakdowns,
+  getOptimizationRecommendations
 };

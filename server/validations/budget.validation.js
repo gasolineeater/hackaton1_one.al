@@ -53,9 +53,32 @@ const deleteBudget = {
   })
 };
 
+// Check thresholds validation schema
+const checkThresholds = {
+  query: Joi.object().keys({})
+};
+
+// Get spending summary validation schema
+const getSpendingSummary = {
+  query: Joi.object().keys({
+    period: Joi.string().valid('monthly', 'quarterly', 'yearly').default('monthly')
+  })
+};
+
+// Get all budgets validation schema
+const getAllBudgets = {
+  query: Joi.object().keys({
+    entityType: Joi.string().valid('line', 'department', 'company'),
+    period: Joi.string().valid('monthly', 'quarterly', 'yearly')
+  })
+};
+
 module.exports = {
   createBudget,
   updateBudget,
   getBudget,
-  deleteBudget
+  deleteBudget,
+  checkThresholds,
+  getSpendingSummary,
+  getAllBudgets
 };
