@@ -67,6 +67,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="ai-recommendations"
+        options={{
+          title: 'AI Insights',
+          headerTitle: 'AI Recommendations',
+          tabBarIcon: ({ color }) => <MaterialIcons name="lightbulb" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="account"
         options={{
           title: 'Account',
