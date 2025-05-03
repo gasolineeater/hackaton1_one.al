@@ -1,0 +1,66 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ONE Albania SME Dashboard API",
+    "version": "1.0.0",
+    "description": "API documentation for ONE Albania SME Dashboard",
+    "contact": {
+      "name": "ONE Albania Support",
+      "email": "support@onealbania.al",
+      "url": "https://www.onealbania.al"
+    },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://www.onealbania.al/terms"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001/api",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.dashboard.onealbania.al/api",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "description": "Returns the current status of the API",
+        "responses": {
+          "200": {
+            "description": "API is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "API is running"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2023-12-01T12:00:00.000Z"
+                    },
+                    "environment": {
+                      "type": "string",
+                      "example": "development"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONE Albania SME Dashboard API</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    header {
+      background-color: #1e3a8a;
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.8;
+      margin-top: 0.5rem;
+    }
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .button {
+      display: inline-block;
+      background-color: #1e3a8a;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-right: 1rem;
+      margin-top: 1rem;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #2c4ba3;
+    }
+    .button.secondary {
+      background-color: #6b7280;
+    }
+    .button.secondary:hover {
+      background-color: #4b5563;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>ONE Albania SME Dashboard API</h1>
+      <div class="subtitle">Backend API for the ONE Albania SME Dashboard</div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="card">
+      <h2>API Documentation</h2>
+      <p>
+        Explore the API endpoints, request/response formats, and authentication requirements.
+      </p>
+      <a href="/api-docs" class="button">View API Documentation</a>
+    </div>
+    
+    <div class="card">
+      <h2>Health Check</h2>
+      <p>
+        Check the current status of the API and its components.
+      </p>
+      <a href="/api/health" class="button">API Health</a>
+      <a href="/metrics" class="button secondary">Metrics</a>
+    </div>
+    
+    <div class="card">
+      <h2>API Tester</h2>
+      <p>
+        Test the API endpoints directly from your browser.
+      </p>
+      <a href="/test.html" class="button">Open API Tester</a>
+    </div>
+  </div>
+  
+  <footer>
+    <div class="container">
+      &copy; 2023 ONE Albania. All rights reserved.
+    </div>
+  </footer>
+</body>
+</html>

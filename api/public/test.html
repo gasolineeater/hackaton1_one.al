@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONE Albania API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .sidebar {
+            flex: 0 0 300px;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .content {
+            flex: 1;
+        }
+        .endpoint {
+            cursor: pointer;
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: #e9e9e9;
+            border-radius: 3px;
+        }
+        .endpoint:hover {
+            background-color: #ddd;
+        }
+        .active {
+            background-color: #007bff;
+            color: white;
+        }
+        #response {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 300px;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        .auth-section {
+            background-color: #e9f7ef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .token-display {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ONE Albania API Tester</h1>
+
+    <div class="auth-section">
+        <h2>Authentication</h2>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" value="admin">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" value="Admin123!">
+        </div>
+        <button onclick="login()">Login</button>
+        <div id="token-info" style="display: none;">
+            <h3>Access Token:</h3>
+            <div id="access-token" class="token-display"></div>
+            <h3>Refresh Token:</h3>
+            <div id="refresh-token" class="token-display"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>API Endpoints</h2>
+
+            <h3>Health Check</h3>
+            <div class="endpoint" onclick="selectEndpoint('health')">GET /api/health</div>
+
+            <h3>Database</h3>
+            <div class="endpoint" onclick="selectEndpoint('db-health')">GET /api/database/health</div>
+            <div class="endpoint" onclick="selectEndpoint('db-stats')">GET /api/database/stats</div>
+
+            <h3>Services</h3>
+            <div class="endpoint" onclick="selectEndpoint('services')">GET /api/services</div>
+            <div class="endpoint" onclick="selectEndpoint('service-detail')">GET /api/services/:id</div>
+
+            <h3>Costs</h3>
+            <div class="endpoint" onclick="selectEndpoint('costs-overview')">GET /api/costs/overview</div>
+            <div class="endpoint" onclick="selectEndpoint('costs-forecast')">GET /api/costs/forecast</div>
+
+            <h3>Analytics</h3>
+            <div class="endpoint" onclick="selectEndpoint('analytics-usage')">GET /api/analytics/usage</div>
+            <div class="endpoint" onclick="selectEndpoint('analytics-cost')">GET /api/analytics/cost</div>
+            <div class="endpoint" onclick="selectEndpoint('analytics-performance')">GET /api/analytics/performance</div>
+            <div class="endpoint" onclick="selectEndpoint('analytics-optimization')">GET /api/analytics/optimization</div>
+            <div class="endpoint" onclick="selectEndpoint('analytics-dashboard')">GET /api/analytics/dashboard</div>
+            <div class="endpoint" onclick="selectEndpoint('analytics-roi')">GET /api/analytics/roi</div>
+
+            <h3>Recommendations</h3>
+            <div class="endpoint" onclick="selectEndpoint('recommendations-services')">GET /api/recommendations/services</div>
+            <div class="endpoint" onclick="selectEndpoint('recommendations-patterns')">GET /api/recommendations/patterns</div>
+            <div class="endpoint" onclick="selectEndpoint('recommendations-optimization')">GET /api/recommendations/optimization</div>
+            <div class="endpoint" onclick="selectEndpoint('recommendations-forecast')">GET /api/recommendations/forecast</div>
+            <div class="endpoint" onclick="selectEndpoint('recommendations-bundles')">GET /api/recommendations/bundles</div>
+            <div class="endpoint" onclick="selectEndpoint('recommendations-segments')">GET /api/recommendations/segments</div>
+
+            <h3>Authentication</h3>
+            <div class="endpoint" onclick="selectEndpoint('auth-register')">POST /api/auth/register</div>
+            <div class="endpoint" onclick="selectEndpoint('auth-login')">POST /api/auth/login</div>
+            <div class="endpoint" onclick="selectEndpoint('auth-me')">GET /api/auth/me</div>
+
+            <h3>Telecom Integration</h3>
+            <div class="endpoint" onclick="selectEndpoint('telecom-usage')">GET /api/telecom/usage/:customerId</div>
+            <div class="endpoint" onclick="selectEndpoint('telecom-realtime')">GET /api/telecom/usage/realtime/:customerId</div>
+            <div class="endpoint" onclick="selectEndpoint('telecom-activate')">POST /api/telecom/services/activate</div>
+            <div class="endpoint" onclick="selectEndpoint('telecom-deactivate')">POST /api/telecom/services/deactivate</div>
+            <div class="endpoint" onclick="selectEndpoint('telecom-change-plan')">POST /api/telecom/services/change-plan</div>
+            <div class="endpoint" onclick="selectEndpoint('telecom-plans')">GET /api/telecom/plans/:serviceType</div>
+
+            <h3>Notifications</h3>
+            <div class="endpoint" onclick="selectEndpoint('notifications-get')">GET /api/notifications</div>
+            <div class="endpoint" onclick="selectEndpoint('notifications-unread')">GET /api/notifications/unread-count</div>
+            <div class="endpoint" onclick="selectEndpoint('notifications-mark-read')">POST /api/notifications/mark-read/:id</div>
+            <div class="endpoint" onclick="selectEndpoint('notifications-mark-all-read')">POST /api/notifications/mark-all-read</div>
+            <div class="endpoint" onclick="selectEndpoint('notifications-delete')">DELETE /api/notifications/:id</div>
+            <div class="endpoint" onclick="selectEndpoint('notifications-templates')">GET /api/notifications/templates</div>
+        </div>
+
+        <div class="content">
+            <h2 id="endpoint-title">Select an endpoint</h2>
+            <div id="endpoint-description"></div>
+
+            <div id="params-form" style="display: none;">
+                <h3>Parameters</h3>
+                <div id="params-inputs"></div>
+            </div>
+
+            <div id="body-form" style="display: none;">
+                <h3>Request Body</h3>
+                <div id="body-inputs"></div>
+            </div>
+
+            <button id="send-button" style="display: none;" onclick="sendRequest()">Send Request</button>
+
+            <h3>Response</h3>
+            <pre id="response">No response yet</pre>
+        </div>
+    </div>
+
+    <script>
+        let accessToken = '';
+        let refreshToken = '';
+        let currentEndpoint = '';
+        const baseUrl = 'http://localhost:3001';
+
+        // Endpoint configurations
+        const endpoints = {
+            'health': {
+                method: 'GET',
+                url: '/api/health',
+                description: 'Check if the API is running',
+                requiresAuth: false
+            },
+            'telecom-usage': {
+                method: 'GET',
+                url: '/api/telecom/usage/:customerId',
+                description: 'Get customer usage statistics',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'period', type: 'select', label: 'Period', options: ['daily', 'weekly', 'monthly'], value: 'monthly' },
+                    { name: 'serviceType', type: 'select', label: 'Service Type', options: ['all', 'mobile', 'internet', 'fixed', 'cloud'], value: 'all' }
+                ]
+            },
+            'telecom-realtime': {
+                method: 'GET',
+                url: '/api/telecom/usage/realtime/:customerId',
+                description: 'Get real-time usage data',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'serviceType', type: 'select', label: 'Service Type', options: ['all', 'mobile', 'internet', 'fixed', 'cloud'], value: 'all' }
+                ]
+            },
+            'telecom-activate': {
+                method: 'POST',
+                url: '/api/telecom/services/activate',
+                description: 'Activate a service for a customer',
+                requiresAuth: true,
+                body: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'serviceId', type: 'text', label: 'Service ID', value: '1' },
+                    { name: 'quantity', type: 'number', label: 'Quantity', value: '1' },
+                    { name: 'plan', type: 'text', label: 'Plan', value: 'standard' },
+                    { name: 'billingCycle', type: 'select', label: 'Billing Cycle', options: ['monthly', 'quarterly', 'annually'], value: 'monthly' },
+                    { name: 'autoRenew', type: 'select', label: 'Auto Renew', options: ['true', 'false'], value: 'true' }
+                ]
+            },
+            'telecom-deactivate': {
+                method: 'POST',
+                url: '/api/telecom/services/deactivate',
+                description: 'Deactivate a service',
+                requiresAuth: true,
+                body: [
+                    { name: 'subscriptionId', type: 'text', label: 'Subscription ID', value: '1' },
+                    { name: 'reason', type: 'select', label: 'Reason', options: ['customer_request', 'service_issue', 'cost', 'other'], value: 'customer_request' },
+                    { name: 'immediate', type: 'select', label: 'Immediate', options: ['true', 'false'], value: 'false' }
+                ]
+            },
+            'telecom-change-plan': {
+                method: 'POST',
+                url: '/api/telecom/services/change-plan',
+                description: 'Change service plan',
+                requiresAuth: true,
+                body: [
+                    { name: 'subscriptionId', type: 'text', label: 'Subscription ID', value: '1' },
+                    { name: 'newPlan', type: 'text', label: 'New Plan', value: 'premium' },
+                    { name: 'effectiveDate', type: 'text', label: 'Effective Date (ISO)', value: new Date().toISOString() }
+                ]
+            },
+            'telecom-plans': {
+                method: 'GET',
+                url: '/api/telecom/plans/:serviceType',
+                description: 'Get available service plans',
+                requiresAuth: true,
+                params: [
+                    { name: 'serviceType', type: 'select', label: 'Service Type', options: ['mobile', 'internet', 'fixed', 'cloud', 'iot'], value: 'mobile' }
+                ]
+            },
+            'notifications-get': {
+                method: 'GET',
+                url: '/api/notifications',
+                description: 'Get user notifications',
+                requiresAuth: true,
+                params: [
+                    { name: 'limit', type: 'number', label: 'Limit', value: '20' },
+                    { name: 'offset', type: 'number', label: 'Offset', value: '0' },
+                    { name: 'includeRead', type: 'select', label: 'Include Read', options: ['true', 'false'], value: 'false' },
+                    { name: 'category', type: 'select', label: 'Category', options: ['', 'system', 'billing', 'usage', 'service', 'security'], value: '' },
+                    { name: 'type', type: 'select', label: 'Type', options: ['', 'info', 'warning', 'alert', 'success'], value: '' },
+                    { name: 'sort', type: 'select', label: 'Sort', options: ['newest', 'oldest', 'priority'], value: 'newest' }
+                ]
+            },
+            'notifications-unread': {
+                method: 'GET',
+                url: '/api/notifications/unread-count',
+                description: 'Get unread notification count',
+                requiresAuth: true
+            },
+            'notifications-mark-read': {
+                method: 'POST',
+                url: '/api/notifications/mark-read/:id',
+                description: 'Mark notification as read',
+                requiresAuth: true,
+                params: [
+                    { name: 'id', type: 'text', label: 'Notification ID', value: '1' }
+                ]
+            },
+            'notifications-mark-all-read': {
+                method: 'POST',
+                url: '/api/notifications/mark-all-read',
+                description: 'Mark all notifications as read',
+                requiresAuth: true
+            },
+            'notifications-delete': {
+                method: 'DELETE',
+                url: '/api/notifications/:id',
+                description: 'Delete notification',
+                requiresAuth: true,
+                params: [
+                    { name: 'id', type: 'text', label: 'Notification ID', value: '1' }
+                ]
+            },
+            'notifications-templates': {
+                method: 'GET',
+                url: '/api/notifications/templates',
+                description: 'Get notification templates',
+                requiresAuth: true,
+                params: [
+                    { name: 'limit', type: 'number', label: 'Limit', value: '20' },
+                    { name: 'offset', type: 'number', label: 'Offset', value: '0' },
+                    { name: 'category', type: 'select', label: 'Category', options: ['', 'system', 'billing', 'usage', 'service', 'security'], value: '' },
+                    { name: 'type', type: 'select', label: 'Type', options: ['', 'info', 'warning', 'alert', 'success'], value: '' },
+                    { name: 'activeOnly', type: 'select', label: 'Active Only', options: ['true', 'false'], value: 'true' }
+                ]
+            },
+            'db-health': {
+                method: 'GET',
+                url: '/api/database/health',
+                description: 'Check database connection',
+                requiresAuth: false
+            },
+            'db-stats': {
+                method: 'GET',
+                url: '/api/database/stats',
+                description: 'Get database statistics',
+                requiresAuth: false
+            },
+            'services': {
+                method: 'GET',
+                url: '/api/services',
+                description: 'Get all telecom services',
+                requiresAuth: false
+            },
+            'service-detail': {
+                method: 'GET',
+                url: '/api/services/:id',
+                description: 'Get details for a specific service',
+                requiresAuth: false,
+                params: [
+                    { name: 'id', type: 'text', label: 'Service ID', value: '1' }
+                ]
+            },
+            'costs-overview': {
+                method: 'GET',
+                url: '/api/costs/overview',
+                description: 'Get cost overview',
+                requiresAuth: false,
+                params: [
+                    { name: 'period', type: 'select', label: 'Period', options: ['monthly', 'quarterly', 'yearly'], value: 'monthly' },
+                    { name: 'companySize', type: 'select', label: 'Company Size', options: ['small', 'medium', 'large'], value: 'medium' }
+                ]
+            },
+            'costs-forecast': {
+                method: 'GET',
+                url: '/api/costs/forecast',
+                description: 'Get cost forecast',
+                requiresAuth: false,
+                params: [
+                    { name: 'months', type: 'number', label: 'Months', value: '6' }
+                ]
+            },
+            'analytics-usage': {
+                method: 'GET',
+                url: '/api/analytics/usage',
+                description: 'Get usage analytics',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID (optional)', value: '' },
+                    { name: 'period', type: 'select', label: 'Period', options: ['daily', 'weekly', 'monthly', 'quarterly', 'yearly'], value: 'monthly' },
+                    { name: 'serviceType', type: 'select', label: 'Service Type', options: ['all', 'mobile', 'internet', 'fixed', 'cloud', 'iot'], value: 'all' },
+                    { name: 'startDate', type: 'text', label: 'Start Date (YYYY-MM-DD)', value: '' },
+                    { name: 'endDate', type: 'text', label: 'End Date (YYYY-MM-DD)', value: '' },
+                    { name: 'groupBy', type: 'select', label: 'Group By', options: ['service', 'customer', 'subscription'], value: 'service' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'false' }
+                ]
+            },
+            'analytics-cost': {
+                method: 'GET',
+                url: '/api/analytics/cost',
+                description: 'Get cost analytics',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID (optional)', value: '' },
+                    { name: 'period', type: 'select', label: 'Period', options: ['monthly', 'quarterly', 'yearly'], value: 'monthly' },
+                    { name: 'serviceType', type: 'select', label: 'Service Type', options: ['all', 'mobile', 'internet', 'fixed', 'cloud', 'iot'], value: 'all' },
+                    { name: 'startDate', type: 'text', label: 'Start Date (YYYY-MM-DD)', value: '' },
+                    { name: 'endDate', type: 'text', label: 'End Date (YYYY-MM-DD)', value: '' },
+                    { name: 'groupBy', type: 'select', label: 'Group By', options: ['service', 'customer', 'subscription'], value: 'service' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'false' }
+                ]
+            },
+            'analytics-performance': {
+                method: 'GET',
+                url: '/api/analytics/performance',
+                description: 'Get performance analytics',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID (optional)', value: '' },
+                    { name: 'serviceIds', type: 'text', label: 'Service IDs (comma-separated)', value: '1,2,3' },
+                    { name: 'period', type: 'select', label: 'Period', options: ['monthly', 'quarterly', 'yearly'], value: 'monthly' },
+                    { name: 'startDate', type: 'text', label: 'Start Date (YYYY-MM-DD)', value: '' },
+                    { name: 'endDate', type: 'text', label: 'End Date (YYYY-MM-DD)', value: '' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'false' }
+                ]
+            },
+            'analytics-optimization': {
+                method: 'GET',
+                url: '/api/analytics/optimization',
+                description: 'Get cost optimization recommendations',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID (optional)', value: '' },
+                    { name: 'threshold', type: 'number', label: 'Utilization Threshold (%)', value: '50' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'false' }
+                ]
+            },
+            'analytics-dashboard': {
+                method: 'GET',
+                url: '/api/analytics/dashboard',
+                description: 'Get dashboard summary data',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID (optional)', value: '' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'false' }
+                ]
+            },
+            'analytics-roi': {
+                method: 'GET',
+                url: '/api/analytics/roi',
+                description: 'Get ROI analysis for a service',
+                requiresAuth: true,
+                params: [
+                    { name: 'serviceId', type: 'text', label: 'Service ID', value: '1' },
+                    { name: 'timeframe', type: 'select', label: 'Timeframe', options: ['6months', '12months', '24months', '36months'], value: '12months' }
+                ]
+            },
+            'recommendations-services': {
+                method: 'GET',
+                url: '/api/recommendations/services',
+                description: 'Get service recommendations',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'businessType', type: 'text', label: 'Business Type', value: 'retail' },
+                    { name: 'employeeCount', type: 'number', label: 'Employee Count', value: '50' },
+                    { name: 'budget', type: 'number', label: 'Budget', value: '2000' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false', 'gemini-only'], value: 'false' }
+                ]
+            },
+            'recommendations-patterns': {
+                method: 'GET',
+                url: '/api/recommendations/patterns',
+                description: 'Get usage pattern analysis',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'period', type: 'number', label: 'Period (months)', value: '3' },
+                    { name: 'serviceType', type: 'select', label: 'Service Type', options: ['all', 'mobile', 'internet', 'fixed', 'cloud', 'iot'], value: 'all' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'true' }
+                ]
+            },
+            'recommendations-optimization': {
+                method: 'GET',
+                url: '/api/recommendations/optimization',
+                description: 'Get cost optimization recommendations',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'optimizationGoal', type: 'select', label: 'Optimization Goal', options: ['cost', 'performance', 'balanced'], value: 'cost' },
+                    { name: 'threshold', type: 'number', label: 'Utilization Threshold (%)', value: '50' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false', 'gemini-only'], value: 'false' }
+                ]
+            },
+            'recommendations-forecast': {
+                method: 'GET',
+                url: '/api/recommendations/forecast',
+                description: 'Get future service needs predictions',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'timeframe', type: 'number', label: 'Timeframe (months)', value: '3' },
+                    { name: 'confidenceLevel', type: 'select', label: 'Confidence Level', options: ['low', 'medium', 'high'], value: 'medium' },
+                    { name: 'serviceType', type: 'select', label: 'Service Type', options: ['all', 'mobile', 'internet', 'fixed', 'cloud', 'iot'], value: 'all' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'true' }
+                ]
+            },
+            'recommendations-bundles': {
+                method: 'GET',
+                url: '/api/recommendations/bundles',
+                description: 'Get recommended service bundles',
+                requiresAuth: true,
+                params: [
+                    { name: 'customerId', type: 'text', label: 'Customer ID', value: '1' },
+                    { name: 'budget', type: 'number', label: 'Budget', value: '2000' },
+                    { name: 'priorities', type: 'text', label: 'Priorities (comma-separated)', value: 'cost,performance' },
+                    { name: 'useAI', type: 'select', label: 'Use AI', options: ['true', 'false'], value: 'true' }
+                ]
+            },
+            'recommendations-segments': {
+                method: 'GET',
+                url: '/api/recommendations/segments',
+                description: 'Get customer segmentation (admin only)',
+                requiresAuth: true
+            },
+            'auth-register': {
+                method: 'POST',
+                url: '/api/auth/register',
+                description: 'Register a new user',
+                requiresAuth: false,
+                body: [
+                    { name: 'username', type: 'text', label: 'Username', value: 'testuser' },
+                    { name: 'email', type: 'email', label: 'Email', value: 'test@example.com' },
+                    { name: 'password', type: 'password', label: 'Password', value: 'Password123!' },
+                    { name: 'firstName', type: 'text', label: 'First Name', value: 'Test' },
+                    { name: 'lastName', type: 'text', label: 'Last Name', value: 'User' },
+                    { name: 'role', type: 'select', label: 'Role', options: ['user', 'manager', 'admin'], value: 'user' }
+                ]
+            },
+            'auth-login': {
+                method: 'POST',
+                url: '/api/auth/login',
+                description: 'Login user',
+                requiresAuth: false,
+                body: [
+                    { name: 'username', type: 'text', label: 'Username', value: 'admin' },
+                    { name: 'password', type: 'password', label: 'Password', value: 'Admin123!' }
+                ]
+            },
+            'auth-me': {
+                method: 'GET',
+                url: '/api/auth/me',
+                description: 'Get current user info',
+                requiresAuth: true
+            }
+        };
+
+        function selectEndpoint(endpoint) {
+            // Clear active class from all endpoints
+            document.querySelectorAll('.endpoint').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Add active class to selected endpoint
+            document.querySelector(`.endpoint[onclick="selectEndpoint('${endpoint}')"]`).classList.add('active');
+
+            currentEndpoint = endpoint;
+            const endpointConfig = endpoints[endpoint];
+
+            // Update title and description
+            document.getElementById('endpoint-title').textContent = `${endpointConfig.method} ${endpointConfig.url}`;
+            document.getElementById('endpoint-description').textContent = endpointConfig.description;
+
+            // Show/hide params form
+            const paramsForm = document.getElementById('params-form');
+            if (endpointConfig.params) {
+                paramsForm.style.display = 'block';
+
+                // Generate param inputs
+                const paramsInputs = document.getElementById('params-inputs');
+                paramsInputs.innerHTML = '';
+
+                endpointConfig.params.forEach(param => {
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group';
+
+                    const label = document.createElement('label');
+                    label.setAttribute('for', `param-${param.name}`);
+                    label.textContent = param.label;
+
+                    let input;
+                    if (param.type === 'select') {
+                        input = document.createElement('select');
+                        param.options.forEach(option => {
+                            const optionEl = document.createElement('option');
+                            optionEl.value = option;
+                            optionEl.textContent = option;
+                            if (option === param.value) {
+                                optionEl.selected = true;
+                            }
+                            input.appendChild(optionEl);
+                        });
+                    } else {
+                        input = document.createElement('input');
+                        input.type = param.type;
+                        input.value = param.value || '';
+                    }
+
+                    input.id = `param-${param.name}`;
+                    input.name = param.name;
+
+                    formGroup.appendChild(label);
+                    formGroup.appendChild(input);
+                    paramsInputs.appendChild(formGroup);
+                });
+            } else {
+                paramsForm.style.display = 'none';
+            }
+
+            // Show/hide body form
+            const bodyForm = document.getElementById('body-form');
+            if (endpointConfig.body) {
+                bodyForm.style.display = 'block';
+
+                // Generate body inputs
+                const bodyInputs = document.getElementById('body-inputs');
+                bodyInputs.innerHTML = '';
+
+                endpointConfig.body.forEach(field => {
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group';
+
+                    const label = document.createElement('label');
+                    label.setAttribute('for', `body-${field.name}`);
+                    label.textContent = field.label;
+
+                    let input;
+                    if (field.type === 'select') {
+                        input = document.createElement('select');
+                        field.options.forEach(option => {
+                            const optionEl = document.createElement('option');
+                            optionEl.value = option;
+                            optionEl.textContent = option;
+                            if (option === field.value) {
+                                optionEl.selected = true;
+                            }
+                            input.appendChild(optionEl);
+                        });
+                    } else {
+                        input = document.createElement('input');
+                        input.type = field.type;
+                        input.value = field.value || '';
+                    }
+
+                    input.id = `body-${field.name}`;
+                    input.name = field.name;
+
+                    formGroup.appendChild(label);
+                    formGroup.appendChild(input);
+                    bodyInputs.appendChild(formGroup);
+                });
+            } else {
+                bodyForm.style.display = 'none';
+            }
+
+            // Show send button
+            document.getElementById('send-button').style.display = 'block';
+        }
+
+        async function sendRequest() {
+            const endpointConfig = endpoints[currentEndpoint];
+
+            // Check if authentication is required
+            if (endpointConfig.requiresAuth && !accessToken) {
+                document.getElementById('response').textContent = 'Authentication required. Please login first.';
+                return;
+            }
+
+            // Build URL with params
+            let url = baseUrl + endpointConfig.url;
+
+            // Replace path params
+            if (endpointConfig.params) {
+                const pathParams = endpointConfig.params.filter(p => url.includes(`:${p.name}`));
+                pathParams.forEach(param => {
+                    const value = document.getElementById(`param-${param.name}`).value;
+                    url = url.replace(`:${param.name}`, value);
+                });
+
+                // Add query params
+                const queryParams = endpointConfig.params.filter(p => !url.includes(`:${p.name}`));
+                if (queryParams.length > 0) {
+                    url += '?';
+                    queryParams.forEach((param, index) => {
+                        const value = document.getElementById(`param-${param.name}`).value;
+                        url += `${param.name}=${encodeURIComponent(value)}`;
+                        if (index < queryParams.length - 1) {
+                            url += '&';
+                        }
+                    });
+                }
+            }
+
+            // Build request options
+            const options = {
+                method: endpointConfig.method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            // Add authentication header if required
+            if (endpointConfig.requiresAuth && accessToken) {
+                options.headers['Authorization'] = `Bearer ${accessToken}`;
+            }
+
+            // Add request body if needed
+            if (endpointConfig.body) {
+                const body = {};
+                endpointConfig.body.forEach(field => {
+                    body[field.name] = document.getElementById(`body-${field.name}`).value;
+                });
+                options.body = JSON.stringify(body);
+            }
+
+            // Send request
+            try {
+                document.getElementById('response').textContent = 'Loading...';
+
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('response').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${baseUrl}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    accessToken = data.data.tokens.accessToken;
+                    refreshToken = data.data.tokens.refreshToken;
+
+                    document.getElementById('token-info').style.display = 'block';
+                    document.getElementById('access-token').textContent = accessToken;
+                    document.getElementById('refresh-token').textContent = refreshToken;
+
+                    document.getElementById('response').textContent = 'Login successful!';
+                } else {
+                    document.getElementById('response').textContent = `Login failed: ${data.message}`;
+                }
+            } catch (error) {
+                document.getElementById('response').textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
