@@ -1,17 +1,17 @@
 import React from 'react';
-import { 
-  AppBar, 
-  Box, 
-  Toolbar, 
-  IconButton, 
-  Typography, 
-  Menu, 
-  MenuItem, 
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
   Avatar,
   Badge,
   Tooltip
 } from '@mui/material';
-import { 
+import {
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
   AccountCircle,
@@ -39,13 +39,13 @@ const Header = ({ onDrawerToggle }) => {
   };
 
   return (
-    <AppBar 
-      position="fixed" 
-      sx={{ 
+    <AppBar
+      position="fixed"
+      sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        backgroundColor: 'white',
-        color: 'text.primary',
-        boxShadow: 1
+        backgroundColor: '#6A1B9A', // ONE Albania violet/purple
+        color: 'white',
+        boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.1)'
       }}
     >
       <Toolbar>
@@ -58,13 +58,13 @@ const Header = ({ onDrawerToggle }) => {
         >
           <MenuIcon />
         </IconButton>
-        
+
         <Box sx={{ flexGrow: 1 }} />
-        
+
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Tooltip title="Notifications">
-            <IconButton 
-              size="large" 
+            <IconButton
+              size="large"
               color="inherit"
               onClick={handleNotificationsMenuOpen}
             >
@@ -73,13 +73,13 @@ const Header = ({ onDrawerToggle }) => {
               </Badge>
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title="Settings">
             <IconButton size="large" color="inherit">
               <SettingsIcon />
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title="Account">
             <IconButton
               size="large"
@@ -96,7 +96,7 @@ const Header = ({ onDrawerToggle }) => {
           </Tooltip>
         </Box>
       </Toolbar>
-      
+
       {/* Profile Menu */}
       <Menu
         anchorEl={anchorEl}
@@ -105,11 +105,11 @@ const Header = ({ onDrawerToggle }) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+        <a href="MyAccountPage"><MenuItem onClick={handleMenuClose}>Profile</MenuItem></a>
+        <a href="MyAccountPage"><MenuItem onClick={handleMenuClose}>My account</MenuItem></a>
+        <a href="MyAccountPage"><MenuItem onClick={handleMenuClose}>Logout</MenuItem></a>
       </Menu>
-      
+
       {/* Notifications Menu */}
       <Menu
         anchorEl={notificationsAnchorEl}
@@ -145,6 +145,7 @@ const Header = ({ onDrawerToggle }) => {
             <Typography variant="body2" color="text.secondary">Roaming services have been activated</Typography>
           </Box>
         </MenuItem>
+        <a href='NotificationsPage'><MenuItem>View all notifications</MenuItem></a>
       </Menu>
     </AppBar>
   );

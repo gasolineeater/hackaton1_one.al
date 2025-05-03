@@ -1,16 +1,16 @@
 import React from 'react';
-import { 
-  Box, 
-  Drawer, 
-  List, 
-  ListItem, 
-  ListItemButton, 
-  ListItemIcon, 
+import {
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
   ListItemText,
   Divider,
   Typography
 } from '@mui/material';
-import { 
+import {
   Dashboard as DashboardIcon,
   PhoneInTalk as PhoneIcon,
   AttachMoney as MoneyIcon,
@@ -43,27 +43,62 @@ const Sidebar = ({ open, onClose }) => {
 
   const drawer = (
     <>
-      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-        <BusinessIcon sx={{ color: 'primary.main' }} />
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+      <Box sx={{
+        p: 2,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+        borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+        backgroundColor: 'white'
+      }}>
+        <BusinessIcon sx={{ color: '#6A1B9A' }} />
+        <Typography variant="h6" component="div" sx={{
+          flexGrow: 1,
+          fontWeight: 'bold',
+          color: '#6A1B9A' // ONE Albania violet/purple
+        }} className="mont-bold">
           ONE Albania
         </Typography>
       </Box>
-      <Typography variant="subtitle2" sx={{ px: 2, mb: 1, color: 'text.secondary' }}>
+      <Typography variant="subtitle2" sx={{
+        px: 2,
+        py: 1,
+        color: 'text.secondary',
+        backgroundColor: '#f8f9fa'
+      }} className="co-medium">
         SME Dashboard
       </Typography>
       <Divider />
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton 
+            <ListItemButton
               onClick={() => handleNavigation(item.path)}
               selected={location.pathname === item.path}
+              sx={{
+                '&.Mui-selected': {
+                  backgroundColor: 'rgba(106, 27, 154, 0.05)',
+                  borderLeft: '3px solid #6A1B9A',
+                  '&:hover': {
+                    backgroundColor: 'rgba(106, 27, 154, 0.08)',
+                  },
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+                borderRadius: '0',
+                mx: 0,
+                my: 0.5,
+                paddingLeft: '16px',
+              }}
             >
               <ListItemIcon sx={{ color: location.pathname === item.path ? 'primary.main' : 'inherit' }}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemText
+                primary={item.text}
+                primaryTypographyProps={{ className: "mont-medium" }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
@@ -84,18 +119,28 @@ const Sidebar = ({ open, onClose }) => {
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+            borderRight: '1px solid rgba(0, 0, 0, 0.08)',
+            backgroundColor: '#f8f9fa',
+          },
         }}
       >
         {drawer}
       </Drawer>
-      
+
       {/* Desktop drawer */}
       <Drawer
         variant="permanent"
         sx={{
           display: { xs: 'none', md: 'block' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+            borderRight: '1px solid rgba(0, 0, 0, 0.08)',
+            backgroundColor: '#f8f9fa',
+          },
         }}
         open
       >
