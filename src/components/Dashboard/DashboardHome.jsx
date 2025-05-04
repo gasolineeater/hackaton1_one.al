@@ -183,8 +183,8 @@ const DashboardHome = () => {
           borderRadius: 0,
           overflow: 'hidden',
           position: 'relative',
-          mx: { xs: '4px', sm: '8px', md: '12px' }, // Just a little space on the sides
-          mt: { xs: -3, sm: -3, md: -3 }
+          mx: 0, // No horizontal margin for true edge-to-edge
+          mt: 2 // Added positive margin to move slider down
         }}
       >
         {loading ? (
@@ -343,32 +343,56 @@ const DashboardHome = () => {
       {/* Dashboard Header */}
       <Box
         sx={{
-          mb: 4,
+          mb: 5,
           mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 }     // Add padding inside to maintain content alignment
+          px: { xs: 2, sm: 3, md: 4 },     // Match footer padding
+          textAlign: 'center'
         }}
       >
-        <Typography variant="h4" gutterBottom className="mont-bold">
+        <Typography variant="h3" gutterBottom className="mont-bold" sx={{
+          mb: 2,
+          background: 'linear-gradient(45deg, #6A1B9A 30%, #9575CD 90%)',
+          backgroundClip: 'text',
+          textFillColor: 'transparent',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
           Dashboard
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" className="co-text" sx={{ mb: 2 }}>
+        <Typography variant="h6" color="text.secondary" className="co-text" sx={{
+          mb: 3,
+          maxWidth: '800px',
+          mx: 'auto'
+        }}>
           Welcome to your ONE Albania SME Dashboard. Here's an overview of your telecom services.
         </Typography>
       </Box>
 
       {/* Quick Stats */}
-      <Grid
-        container
-        spacing={{ xs: 2, sm: 3 }}
-        sx={{
+      <Box sx={{
+        mb: 5,
+        mx: 0,
+        px: { xs: 2, sm: 3, md: 4 },
+        width: '100%'
+      }}>
+        <Typography variant="h5" className="mont-bold" sx={{
           mb: 3,
-          mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 },    // Add padding inside to maintain content alignment
-          width: 'auto'                    // Allow grid to extend beyond its container
-        }}
-      >
+          textAlign: 'center',
+          color: '#6A1B9A'
+        }}>
+          Quick Overview
+        </Typography>
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3 }}
+          sx={{
+            mx: 0,
+            width: '100%',
+            justifyContent: 'center'
+          }}
+        >
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Lines
             </Typography>
@@ -385,7 +409,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Data Usage
             </Typography>
@@ -402,7 +426,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Monthly Cost
             </Typography>
@@ -419,7 +443,7 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
         <Grid item xs={6} sm={6} md={3}>
-          <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 0 }}>
+          <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 0 }}>
             <Typography variant="subtitle2" color="text.secondary" className="co-medium">
               Active Alerts
             </Typography>
@@ -436,299 +460,268 @@ const DashboardHome = () => {
           </Paper>
         </Grid>
       </Grid>
+      </Box>
 
       {/* Main Content */}
-      <Grid
-        container
-        spacing={{ xs: 2, sm: 3 }}
-        sx={{
-          mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 },    // Add padding inside to maintain content alignment
-          width: 'auto'                    // Allow grid to extend beyond its container
-        }}
-      >
-        {/* Usage Chart */}
-        <Grid item xs={12} md={8}>
-          <Card elevation={0} sx={{ borderRadius: 0 }}>
-            <CardHeader
-              title="Monthly Usage Trends"
-              titleTypographyProps={{ className: "mont-semibold" }}
-            />
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={usageHistory}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="data" name="Data (GB)" fill="#6A1B9A" />
-                  <Bar dataKey="calls" name="Calls (hours)" fill="#9575CD" />
-                  <Bar dataKey="sms" name="SMS (hundreds)" fill="#3F51B5" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
+      <Box sx={{
+        mb: 5,
+        mx: 0,
+        px: { xs: 2, sm: 3, md: 4 },
+        width: '100%'
+      }}>
+        <Typography variant="h5" className="mont-bold" sx={{
+          mb: 3,
+          textAlign: 'center',
+          color: '#6A1B9A'
+        }}>
+          Service Analytics
+        </Typography>
 
-        {/* Cost Breakdown */}
-        <Grid item xs={12} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 0 }}>
-            <CardHeader
-              title="Cost Breakdown"
-              titleTypographyProps={{ className: "mont-semibold" }}
-            />
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={costBreakdown}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+        {/* First Row: Charts */}
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3 }}
+          sx={{
+            mx: 0,
+            width: '100%',
+            justifyContent: 'center',
+            mb: 3
+          }}
+        >
+          {/* Usage Chart */}
+          <Grid item xs={12} md={8}>
+            <Card elevation={0} sx={{ borderRadius: 0 }}>
+              <CardHeader
+                title="Monthly Usage Trends"
+                titleTypographyProps={{ className: "mont-semibold" }}
+              />
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={usageHistory}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
-                    {costBreakdown.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="data" name="Data (GB)" fill="#6A1B9A" />
+                    <Bar dataKey="calls" name="Calls (hours)" fill="#9575CD" />
+                    <Bar dataKey="sms" name="SMS (hundreds)" fill="#3F51B5" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Cost Breakdown */}
+          <Grid item xs={12} md={4}>
+            <Card elevation={0} sx={{ borderRadius: 0 }}>
+              <CardHeader
+                title="Cost Breakdown"
+                titleTypographyProps={{ className: "mont-semibold" }}
+              />
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={costBreakdown}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {costBreakdown.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
 
-        {/* Line Usage */}
-        <Grid item xs={12} md={6}>
-          <Card elevation={0} sx={{ borderRadius: 0 }}>
-            <CardHeader
-              title="Line Usage"
-              titleTypographyProps={{ className: "mont-semibold" }}
-            />
-            <CardContent sx={{ px: { xs: 1, sm: 2 } }}>
-              <List>
-                {telecomLines.slice(0, 4).map((line) => (
-                  <React.Fragment key={line.id}>
-                    <ListItem>
-                      <ListItemIcon>
-                        <PhoneInTalk color={line.status === 'active' ? 'primary' : 'disabled'} />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={line.phoneNumber}
-                        secondary={`${line.assignedTo} - ${line.plan}`}
-                      />
-                      <Box sx={{ width: { xs: '30%', sm: '40%' } }}>
-                        <LinearProgress
-                          variant="determinate"
-                          value={(line.currentUsage / line.monthlyLimit) * 100}
-                          color={
-                            (line.currentUsage / line.monthlyLimit) > 0.9
-                              ? 'error'
-                              : (line.currentUsage / line.monthlyLimit) > 0.7
-                                ? 'warning'
-                                : 'primary'
-                          }
-                          sx={{ borderRadius: 5, height: 8 }}
+        {/* Second Row: Line Usage, AI Recommendations, and Alerts in a single row */}
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3 }}
+          sx={{
+            mx: 0,
+            width: '100%',
+            justifyContent: 'center'
+          }}
+        >
+          {/* Line Usage */}
+          <Grid item xs={12} md={4}>
+            <Card elevation={0} sx={{ borderRadius: 0, height: '100%' }}>
+              <CardHeader
+                title="Line Usage"
+                titleTypographyProps={{ className: "mont-semibold" }}
+              />
+              <CardContent sx={{ px: { xs: 2, sm: 3 } }}>
+                <List>
+                  {telecomLines.slice(0, 4).map((line) => (
+                    <React.Fragment key={line.id}>
+                      <ListItem>
+                        <ListItemIcon>
+                          <PhoneInTalk color={line.status === 'active' ? 'primary' : 'disabled'} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={line.phoneNumber}
+                          secondary={`${line.assignedTo} - ${line.plan}`}
                         />
-                      </Box>
-                      <Typography variant="body2" sx={{ ml: 1, minWidth: { xs: 50, sm: 70 }, textAlign: 'right' }}>
-                        {line.currentUsage}/{line.monthlyLimit} GB
-                      </Typography>
-                    </ListItem>
-                    {telecomLines.indexOf(line) < telecomLines.length - 1 && <Divider variant="inset" component="li" />}
-                  </React.Fragment>
-                ))}
-              </List>
-              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                <Button variant="outlined" size="small" className="mont-medium">View All Lines</Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* AI Recommendations */}
-        <Grid item xs={12} md={6}>
-          <Card elevation={0} sx={{ borderRadius: 0 }}>
-            <CardHeader
-              title="AI Recommendations"
-              titleTypographyProps={{ className: "mont-semibold" }}
-              action={
-                <Button
-                  startIcon={<Lightbulb />}
-                  color="primary"
-                  size="small"
-                  className="mont-medium"
-                >
-                  View All
-                </Button>
-              }
-            />
-            <CardContent sx={{ px: { xs: 1, sm: 2 } }}>
-              <List>
-                {aiRecommendations.slice(0, 3).map((rec) => (
-                  <React.Fragment key={rec.id}>
-                    <ListItem alignItems="flex-start">
-                      <ListItemIcon>
-                        <Lightbulb color={rec.priority === 'high' ? 'error' : 'primary'} />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={rec.title}
-                        secondary={
-                          <>
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              color="text.primary"
-                            >
-                              Potential savings: €{rec.savingsAmount}/month
-                            </Typography>
-                            {` — ${rec.description}`}
-                          </>
-                        }
-                      />
-                    </ListItem>
-                    {aiRecommendations.indexOf(rec) < aiRecommendations.length - 1 && <Divider variant="inset" component="li" />}
-                  </React.Fragment>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Alerts */}
-        <Grid item xs={12}>
-          <Card elevation={0} sx={{ borderRadius: 0 }}>
-            <CardHeader
-              title="Recent Alerts"
-              titleTypographyProps={{ className: "mont-semibold" }}
-            />
-            <CardContent>
-              <Grid container spacing={{ xs: 2, sm: 3 }}>
-                {usageAlerts.map((alert) => {
-                  const line = telecomLines.find(l => l.id === alert.lineId);
-                  return (
-                    <Grid item xs={12} sm={6} md={3} key={alert.id}>
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: { xs: 1.5, sm: 2 },
-                          borderRadius: 0,
-                          border: 1,
-                          borderColor:
-                            alert.severity === 'critical'
-                              ? 'error.main'
-                              : alert.severity === 'warning'
-                                ? 'warning.main'
-                                : 'info.main',
-                          bgcolor:
-                            alert.severity === 'critical'
-                              ? 'error.lighter'
-                              : alert.severity === 'warning'
-                                ? 'warning.lighter'
-                                : 'info.lighter',
-                          height: '100%',
-                          display: 'flex',
-                          flexDirection: 'column'
-                        }}
-                      >
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                          {alert.type === 'data' && <DataUsage color="primary" sx={{ mr: 1 }} />}
-                          {alert.type === 'billing' && <Warning color="error" sx={{ mr: 1 }} />}
-                          {alert.type === 'roaming' && <PhoneInTalk color="info" sx={{ mr: 1 }} />}
-                          <Typography variant="subtitle2">
-                            {line?.phoneNumber}
-                          </Typography>
+                        <Box sx={{ width: { xs: '30%', sm: '40%' } }}>
+                          <LinearProgress
+                            variant="determinate"
+                            value={(line.currentUsage / line.monthlyLimit) * 100}
+                            color={
+                              (line.currentUsage / line.monthlyLimit) > 0.9
+                                ? 'error'
+                                : (line.currentUsage / line.monthlyLimit) > 0.7
+                                  ? 'warning'
+                                  : 'primary'
+                            }
+                            sx={{ borderRadius: 5, height: 8 }}
+                          />
                         </Box>
-                        <Typography variant="body2" sx={{ mb: 2, flexGrow: 1 }}>
-                          {alert.message}
+                        <Typography variant="body2" sx={{ ml: 1, minWidth: { xs: 50, sm: 70 }, textAlign: 'right' }}>
+                          {line.currentUsage}/{line.monthlyLimit} GB
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {new Date(alert.timestamp).toLocaleString()}
-                        </Typography>
-                      </Paper>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+                      </ListItem>
+                      {telecomLines.indexOf(line) < telecomLines.length - 1 && <Divider variant="inset" component="li" />}
+                    </React.Fragment>
+                  ))}
+                </List>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                  <Button variant="outlined" size="small" className="mont-medium">View All Lines</Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
 
-      {/* News & Updates Section */}
-      <Box
-        sx={{
-          mt: 6,
-          mb: 4,
-          mx: 0, // No margin for true edge-to-edge
-          px: { xs: 1, sm: 2, md: 3 }     // Add padding inside to maintain content alignment
-        }}
-      >
-        <Typography variant="h5" gutterBottom className="mont-bold">
-          News & Updates
-        </Typography>
-        <Typography variant="body1" color="text.secondary" className="co-text" sx={{ mb: 3 }}>
-          Stay informed about the latest ONE Albania services and announcements
-        </Typography>
-
-        <Grid container spacing={3}>
-          {newsUpdates.map((news) => (
-            <Grid item xs={12} sm={6} md={4} key={news.id}>
-              <Card
-                elevation={0}
-                sx={{
-                  height: '100%',
-                  borderRadius: 0,
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
-                  }
-                }}
-              >
-                <Box
-                  sx={{
-                    height: 200,
-                    backgroundImage: `url(${news.imageUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }}
-                />
-                <CardContent>
-                  <Typography variant="caption" color="text.secondary" className="co-medium">
-                    {news.date}
-                  </Typography>
-                  <Typography variant="h6" className="mont-semibold" gutterBottom>
-                    {news.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" className="co-text">
-                    {news.description}
-                  </Typography>
-                </CardContent>
-                <Box sx={{ p: 2, pt: 0, display: 'flex', justifyContent: 'flex-end' }}>
+          {/* AI Recommendations */}
+          <Grid item xs={12} md={4}>
+            <Card elevation={0} sx={{ borderRadius: 0, height: '100%' }}>
+              <CardHeader
+                title="AI Recommendations"
+                titleTypographyProps={{ className: "mont-semibold" }}
+                action={
                   <Button
-                    endIcon={<KeyboardArrowRight />}
+                    startIcon={<Lightbulb />}
                     color="primary"
+                    size="small"
                     className="mont-medium"
                   >
-                    Read More
+                    View All
                   </Button>
-                </Box>
-              </Card>
-            </Grid>
-          ))}
+                }
+              />
+              <CardContent sx={{ px: { xs: 2, sm: 3 } }}>
+                <List>
+                  {aiRecommendations.slice(0, 3).map((rec) => (
+                    <React.Fragment key={rec.id}>
+                      <ListItem alignItems="flex-start">
+                        <ListItemIcon>
+                          <Lightbulb color={rec.priority === 'high' ? 'error' : 'primary'} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={rec.title}
+                          secondary={
+                            <>
+                              <Typography
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                Potential savings: €{rec.savingsAmount}/month
+                              </Typography>
+                              {` — ${rec.description}`}
+                            </>
+                          }
+                        />
+                      </ListItem>
+                      {aiRecommendations.indexOf(rec) < aiRecommendations.length - 1 && <Divider variant="inset" component="li" />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Recent Alerts - Condensed to fit in a column */}
+          <Grid item xs={12} md={4}>
+            <Card elevation={0} sx={{ borderRadius: 0, height: '100%' }}>
+              <CardHeader
+                title="Recent Alerts"
+                titleTypographyProps={{ className: "mont-semibold" }}
+              />
+              <CardContent>
+                <Grid container spacing={2}>
+                  {usageAlerts.slice(0, 2).map((alert) => {
+                    const line = telecomLines.find(l => l.id === alert.lineId);
+                    return (
+                      <Grid item xs={12} key={alert.id}>
+                        <Paper
+                          elevation={0}
+                          sx={{
+                            p: 2,
+                            borderRadius: 0,
+                            border: 1,
+                            borderColor:
+                              alert.severity === 'critical'
+                                ? 'error.main'
+                                : alert.severity === 'warning'
+                                  ? 'warning.main'
+                                  : 'info.main',
+                            bgcolor:
+                              alert.severity === 'critical'
+                                ? 'error.lighter'
+                                : alert.severity === 'warning'
+                                  ? 'warning.lighter'
+                                  : 'info.lighter',
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column'
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                            {alert.type === 'data' && <DataUsage color="primary" sx={{ mr: 1 }} />}
+                            {alert.type === 'billing' && <Warning color="error" sx={{ mr: 1 }} />}
+                            {alert.type === 'roaming' && <PhoneInTalk color="info" sx={{ mr: 1 }} />}
+                            <Typography variant="subtitle2">
+                              {line?.phoneNumber}
+                            </Typography>
+                          </Box>
+                          <Typography variant="body2" sx={{ mb: 1, flexGrow: 1 }}>
+                            {alert.message}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(alert.timestamp).toLocaleString()}
+                          </Typography>
+                        </Paper>
+                      </Grid>
+                    );
+                  })}
+                  <Grid item xs={12}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+                      <Button variant="outlined" size="small" className="mont-medium">View All Alerts</Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
       </Box>
 
-      {/* Quick Access Tabs */}
-      <Box sx={{ mt: 6, mb: 4 }}>
+      {/* Quick Access Tabs - Moved up */}
+      <Box sx={{ mb: 5, px: { xs: 2, sm: 3, md: 4 } }}>
         <Card elevation={0}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
@@ -800,6 +793,70 @@ const DashboardHome = () => {
         </Card>
       </Box>
 
+      {/* News & Updates Section - Moved down */}
+      <Box
+        sx={{
+          mb: 4,
+          mx: 0, // No margin for true edge-to-edge
+          px: { xs: 2, sm: 3, md: 4 }     // Match footer padding
+        }}
+      >
+        <Typography variant="h5" gutterBottom className="mont-bold">
+          News & Updates
+        </Typography>
+        <Typography variant="body1" color="text.secondary" className="co-text" sx={{ mb: 3 }}>
+          Stay informed about the latest ONE Albania services and announcements
+        </Typography>
+
+        <Grid container spacing={3}>
+          {newsUpdates.map((news) => (
+            <Grid item xs={12} sm={6} md={4} key={news.id}>
+              <Card
+                elevation={0}
+                sx={{
+                  height: '100%',
+                  borderRadius: 0,
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
+                  }
+                }}
+              >
+                <Box
+                  sx={{
+                    height: 200,
+                    backgroundImage: `url(${news.imageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}
+                />
+                <CardContent>
+                  <Typography variant="caption" color="text.secondary" className="co-medium">
+                    {news.date}
+                  </Typography>
+                  <Typography variant="h6" className="mont-semibold" gutterBottom>
+                    {news.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" className="co-text">
+                    {news.description}
+                  </Typography>
+                </CardContent>
+                <Box sx={{ p: 2, pt: 0, display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button
+                    endIcon={<KeyboardArrowRight />}
+                    color="primary"
+                    className="mont-medium"
+                  >
+                    Read More
+                  </Button>
+                </Box>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
       {/* Footer */}
       <Box
         component="footer"
@@ -808,8 +865,10 @@ const DashboardHome = () => {
           py: 6,
           bgcolor: 'primary.dark',
           color: 'white',
-          borderRadius: 2,
-          px: 4
+          borderRadius: 0,
+          px: { xs: 2, sm: 3, md: 4 },
+          mx: 0, // No margin for true edge-to-edge
+          width: '100%'
         }}
       >
         <Grid container spacing={4}>
