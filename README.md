@@ -20,6 +20,11 @@ ONE Albania wants a unified, intelligent digital dashboard for SMEs that helps t
 
 ## 🚀 Quick Start
 
+### Demo URL
+
+Check out the live demo of the ONE Albania SME Dashboard:
+[one-albania-sme-dashboard.surge.sh](https://one-albania-sme-dashboard.surge.sh)
+
 See [INSTALL.md](INSTALL.md) for detailed installation and setup instructions.
 
 ## 📊 Features
