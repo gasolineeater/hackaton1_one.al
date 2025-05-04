@@ -103,6 +103,9 @@ export default function ServiceOverviewScreen() {
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [selectedPackageType, setSelectedPackageType] = useState('');
+  const [selectedDataCap, setSelectedDataCap] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // State for service toggles
   const [serviceStates, setServiceStates] = useState(
@@ -120,6 +123,20 @@ export default function ServiceOverviewScreen() {
         [service]: !prev[lineId][service]
       }
     }));
+
+    // Show success message
+    const serviceName = service === 'internationalCalls' ? 'International Calls' :
+                        service === 'callForwarding' ? 'Call Forwarding' :
+                        service.charAt(0).toUpperCase() + service.slice(1);
+
+    const action = serviceStates[lineId][service] ? 'disabled' : 'enabled';
+    setSuccessMessage(`${serviceName} has been ${action}.`);
+    setShowSuccess(true);
+
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3000);
   };
 
   const handleLineSelect = (line) => {
@@ -135,11 +152,78 @@ export default function ServiceOverviewScreen() {
   const handleAddPackage = (packageId) => {
     // In a real app, this would call an API to add the package
     setMenuVisible(false);
+
+    // Find the package details
+    let packageName = '';
+    let packageType = '';
+
+    if (packageId.startsWith('r')) {
+      const pkg = servicePackages.roaming.find(p => p.id === packageId);
+      if (pkg) {
+        packageName = pkg.name;
+        packageType = 'Roaming';
+      }
+    } else if (packageId.startsWith('i')) {
+      const pkg = servicePackages.international.find(p => p.id === packageId);
+      if (pkg) {
+        packageName = pkg.name;
+        packageType = 'International Calling';
+      }
+    } else if (packageId.startsWith('d')) {
+      const pkg = servicePackages.dataPacks.find(p => p.id === packageId);
+      if (pkg) {
+        packageName = pkg.name;
+        packageType = 'Data';
+      }
+    }
+
     // Show success message
+    setSuccessMessage(`${packageType} package "${packageName}" has been added.`);
+    setShowSuccess(true);
+
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3000);
+  };
+
+  const handleDataCapSelect = (cap) => {
+    setSelectedDataCap(cap);
+  };
+
+  const applyDataCapChange = () => {
+    if (selectedDataCap) {
+      setServiceStates(prev => ({
+        ...prev,
+        [selectedLine.id]: {
+          ...prev[selectedLine.id],
+          dataCap: selectedDataCap
+        }
+      }));
+
+      // In a real app, this would call an API to update the data cap
+      setSuccessMessage(`Data cap has been updated to ${selectedDataCap}.`);
+      setShowSuccess(true);
+
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+
+      setSelectedDataCap('');
+    }
   };
 
   return (
     <ThemedView style={styles.container}>
+      {/* Success Message */}
+      {showSuccess && (
+        <View style={styles.successMessage}>
+          <MaterialIcons name="check-circle" size={24} color="#fff" />
+          <ThemedText style={styles.successText}>{successMessage}</ThemedText>
+        </View>
+      )}
+
       <ScrollView>
         {/* Section Tabs */}
         <View style={styles.tabContainer}>
@@ -334,34 +418,38 @@ export default function ServiceOverviewScreen() {
 
                 <View style={styles.dataCapOptions}>
                   <Button
-                    mode="outlined"
-                    onPress={() => {}}
+                    mode={selectedDataCap === '5 GB' ? 'contained' : 'outlined'}
+                    onPress={() => handleDataCapSelect('5 GB')}
                     style={styles.dataCapButton}
-                    textColor={OneAlbaniaColors.primary}
+                    textColor={selectedDataCap === '5 GB' ? '#fff' : OneAlbaniaColors.primary}
+                    buttonColor={selectedDataCap === '5 GB' ? OneAlbaniaColors.primary : undefined}
                   >
                     5 GB
                   </Button>
                   <Button
-                    mode="outlined"
-                    onPress={() => {}}
+                    mode={selectedDataCap === '10 GB' ? 'contained' : 'outlined'}
+                    onPress={() => handleDataCapSelect('10 GB')}
                     style={styles.dataCapButton}
-                    textColor={OneAlbaniaColors.primary}
+                    textColor={selectedDataCap === '10 GB' ? '#fff' : OneAlbaniaColors.primary}
+                    buttonColor={selectedDataCap === '10 GB' ? OneAlbaniaColors.primary : undefined}
                   >
                     10 GB
                   </Button>
                   <Button
-                    mode="outlined"
-                    onPress={() => {}}
+                    mode={selectedDataCap === '15 GB' ? 'contained' : 'outlined'}
+                    onPress={() => handleDataCapSelect('15 GB')}
                     style={styles.dataCapButton}
-                    textColor={OneAlbaniaColors.primary}
+                    textColor={selectedDataCap === '15 GB' ? '#fff' : OneAlbaniaColors.primary}
+                    buttonColor={selectedDataCap === '15 GB' ? OneAlbaniaColors.primary : undefined}
                   >
                     15 GB
                   </Button>
                   <Button
-                    mode="outlined"
-                    onPress={() => {}}
+                    mode={selectedDataCap === '20 GB' ? 'contained' : 'outlined'}
+                    onPress={() => handleDataCapSelect('20 GB')}
                     style={styles.dataCapButton}
-                    textColor={OneAlbaniaColors.primary}
+                    textColor={selectedDataCap === '20 GB' ? '#fff' : OneAlbaniaColors.primary}
+                    buttonColor={selectedDataCap === '20 GB' ? OneAlbaniaColors.primary : undefined}
                   >
                     20 GB
                   </Button>
@@ -369,9 +457,10 @@ export default function ServiceOverviewScreen() {
 
                 <Button
                   mode="contained"
-                  onPress={() => {}}
+                  onPress={applyDataCapChange}
                   style={styles.applyButton}
                   buttonColor={OneAlbaniaColors.primary}
+                  disabled={!selectedDataCap}
                 >
                   Apply Changes
                 </Button>
@@ -404,7 +493,7 @@ export default function ServiceOverviewScreen() {
                         <Paragraph style={styles.packagePrice}>{pkg.price}</Paragraph>
                         <Button
                           mode="contained"
-                          onPress={() => {}}
+                          onPress={() => handleAddPackage(pkg.id)}
                           style={styles.addPackageButton}
                           buttonColor={OneAlbaniaColors.primary}
                         >
@@ -435,7 +524,7 @@ export default function ServiceOverviewScreen() {
                         <Paragraph style={styles.packagePrice}>{pkg.price}</Paragraph>
                         <Button
                           mode="contained"
-                          onPress={() => {}}
+                          onPress={() => handleAddPackage(pkg.id)}
                           style={styles.addPackageButton}
                           buttonColor={OneAlbaniaColors.primary}
                         >
@@ -467,7 +556,7 @@ export default function ServiceOverviewScreen() {
                         <Paragraph style={styles.packagePrice}>{pkg.price}</Paragraph>
                         <Button
                           mode="contained"
-                          onPress={() => {}}
+                          onPress={() => handleAddPackage(pkg.id)}
                           style={styles.addPackageButton}
                           buttonColor={OneAlbaniaColors.primary}
                         >
@@ -624,5 +713,23 @@ const styles = StyleSheet.create({
   addPackageButton: {
     borderRadius: 4,
     height: 36,
+  },
+  successMessage: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    right: 16,
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 1000,
+    elevation: 5,
+  },
+  successText: {
+    color: '#fff',
+    marginLeft: 8,
+    flex: 1,
   },
 });
