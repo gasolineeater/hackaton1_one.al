@@ -5,6 +5,7 @@ This guide provides instructions for installing, running, and testing the ONE Al
 ## 👥 Team Members
 
 - **Elvi Zekaj** - Full Stack Developer
+- **Andet Fejzuli** - Frontend Developer
 - **Aldin Zendeli** - UI/UX Designer
 - **Guido Andreini** - Backend Developer
 - **Lorenzo Agnello** - Project Manager
