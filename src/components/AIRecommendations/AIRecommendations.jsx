@@ -248,9 +248,9 @@ const AIRecommendations = () => {
           </Box>
 
           {/* Insights Cards Container */}
-          <Grid container spacing={3}>
+          <Grid container spacing={4} justifyContent="center">
             {/* Savings Summary Card */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               <Paper
                 elevation={3}
                 sx={{
@@ -296,7 +296,7 @@ const AIRecommendations = () => {
             </Grid>
 
             {/* AI Analysis Card */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               <Paper
                 elevation={3}
                 sx={{
@@ -415,7 +415,7 @@ const AIRecommendations = () => {
           </Box>
 
           {/* Recommendations Cards */}
-          <Grid container spacing={3}>
+          <Grid container spacing={4} justifyContent="center">
             {recommendations
               .filter(rec => {
                 if (selectedTab === 0) return true;
@@ -424,7 +424,7 @@ const AIRecommendations = () => {
                 return true;
               })
               .map((recommendation) => (
-                <Grid item xs={12} md={6} key={recommendation.id}>
+                <Grid item xs={12} md={5} key={recommendation.id}>
                   <Card
                     elevation={3}
                     sx={{
@@ -563,9 +563,9 @@ const AIRecommendations = () => {
           </Box>
 
           {/* Methodology Cards */}
-          <Grid container spacing={3}>
+          <Grid container spacing={4} justifyContent="center">
             {/* How It Works */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               <Card
                 elevation={3}
                 sx={{
@@ -626,7 +626,7 @@ const AIRecommendations = () => {
             </Grid>
 
             {/* AI Benefits */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               <Card
                 elevation={3}
                 sx={{
