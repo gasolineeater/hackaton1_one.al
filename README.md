@@ -52,7 +52,7 @@ Our application follows a modern frontend architecture:
 
 ## 👥 Team Members
 
-- **Elvi Zekaj** - Frontend Developer
+- **Elvi Zekaj** - Full Stack Developer
 - **Aldin Zendeli** - UI/UX Designer
 - **Guido Andreini** - Backend Developer
 - **Lorenzo Agnello** - Project Manager

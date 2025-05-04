@@ -4,7 +4,7 @@ This guide provides step-by-step instructions for setting up the ONE Albania SME
 
 ## 👥 Team Members
 
-- **Elvi Zekaj** - Frontend Developer
+- **Elvi Zekaj** - Full Stack Developer
 - **Aldin Zendeli** - UI/UX Designer
 - **Guido Andreini** - Backend Developer
 - **Lorenzo Agnello** - Project Manager
@@ -224,7 +224,7 @@ npm install
 ## 🆘 Getting Help
 
 If you encounter any issues not covered in this guide, please contact:
-- For frontend issues: Elvi Zekaj
+- For full stack (frontend/backend) issues: Elvi Zekaj
 - For UI/UX issues: Aldin Zendeli
 - For backend issues: Guido Andreini
 - For project management: Lorenzo Agnello
