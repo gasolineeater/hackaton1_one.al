@@ -612,14 +612,14 @@ const DashboardHome = () => {
                 title="AI Recommendations"
                 titleTypographyProps={{ className: "mont-semibold" }}
                 action={
-                  <Button
+                  <a href="ai-recommendations"><Button
                     startIcon={<Lightbulb />}
                     color="primary"
                     size="small"
                     className="mont-medium"
                   >
                     View All
-                  </Button>
+                  </Button></a>
                 }
               />
               <CardContent sx={{ px: { xs: 2, sm: 3 } }}>

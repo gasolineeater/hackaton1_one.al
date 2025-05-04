@@ -353,9 +353,10 @@ const ServiceManagement = () => {
               className="mont-semibold"
               sx={{
                 color: '#6A1B9A',
-                mb: 2,
+                mb: 0,
                 mt: 5,
                 pb: 1,
+
                 borderBottom: '1px solid rgba(106, 27, 154, 0.2)'
               }}
             >
@@ -382,7 +383,7 @@ const ServiceManagement = () => {
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                         <Box
                           sx={{
-                            mr: 2,
+                            mr: 9,
                             bgcolor: service.enabled ? '#6A1B9A' : 'rgba(0, 0, 0, 0.12)',
                             color: 'white',
                             p: 1,
