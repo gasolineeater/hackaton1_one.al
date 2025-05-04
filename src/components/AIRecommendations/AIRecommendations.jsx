@@ -229,14 +229,18 @@ const AIRecommendations = () => {
               bgcolor: '#6A1B9A',
               border: '1px solid #6A1B9A',
               py: 2,
-              borderRadius: 0.5
+              borderRadius: 0.5,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}>
               <Typography
                 variant="h4"
                 className="mont-bold"
                 sx={{
                   color: 'white',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  width: '100%'
                 }}
               >
                 AI-Powered Telecom Optimization Insights
@@ -361,14 +365,18 @@ const AIRecommendations = () => {
               bgcolor: '#6A1B9A',
               border: '1px solid #6A1B9A',
               py: 2,
-              borderRadius: 0.5
+              borderRadius: 0.5,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}>
               <Typography
                 variant="h4"
                 className="mont-bold"
                 sx={{
                   color: 'white',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  width: '100%'
                 }}
               >
                 Personalized Recommendations
@@ -545,14 +553,18 @@ const AIRecommendations = () => {
               bgcolor: '#6A1B9A',
               border: '1px solid #6A1B9A',
               py: 2,
-              borderRadius: 0.5
+              borderRadius: 0.5,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}>
               <Typography
                 variant="h4"
                 className="mont-bold"
                 sx={{
                   color: 'white',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  width: '100%'
                 }}
               >
                 AI Methodology
