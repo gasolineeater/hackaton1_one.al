@@ -191,17 +191,37 @@ const NotificationsPage = () => {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom className="mont-bold">
-        Notifications
-      </Typography>
-      <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }} className="co-text">
-        Stay updated with alerts, billing information, and service updates
-      </Typography>
+      <Box sx={{
+        textAlign: 'center',
+        mb: 5,
+        mt: 4,
+        px: { xs: 2, sm: 3, md: 4 }
+      }}>
+        <Typography variant="h3" gutterBottom className="mont-bold" sx={{
+          mb: 2,
 
-      <Grid container spacing={4}>
+          background: 'linear-gradient(45deg, #6A1B9A 30%, #9575CD 90%)',
+          backgroundClip: 'text',
+          textFillColor: 'transparent',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          Notifications
+        </Typography>
+
+        <Typography variant="h6" color="text.secondary" className="co-text" sx={{
+          mb: 3,
+          maxWidth: '800px',
+          mx: 'auto'
+        }}>
+          Manage your notifications and preferences
+        </Typography>
+      </Box>
+
+      <Grid container spacing={4} sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, sm: 3, md: 4 } }} justifyContent="center">
         {/* Notifications List */}
-        <Grid item xs={12} md={8}>
-          <Paper elevation={1} sx={{ borderRadius: 2 }}>
+        <Grid item xs={12} md={7}>
+          <Paper elevation={3} sx={{ borderRadius: 0.4, border: '2px solid #6A1B9A', overflow: 'hidden' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Tabs
                 value={tabValue}
@@ -279,7 +299,7 @@ const NotificationsPage = () => {
 
         {/* Notification Settings */}
         <Grid item xs={12} md={4}>
-          <Paper elevation={1} sx={{ p: 3, borderRadius: 2 }}>
+          <Paper elevation={3} sx={{ p: 3, borderRadius: 0.4, border: '2px solid #6A1B9A' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
               <SettingsIcon color="primary" sx={{ mr: 1 }} />
               <Typography variant="h6" className="mont-semibold">
@@ -287,12 +307,12 @@ const NotificationsPage = () => {
               </Typography>
             </Box>
 
-            <Card sx={{ mb: 3 }}>
+            <Card sx={{ mb: 3, borderRadius: 0.4, border: '1px solid rgba(106, 27, 154, 0.3)' }}>
               <CardContent>
-                <Typography variant="subtitle1" gutterBottom className="mont-semibold">
+                <Typography variant="subtitle1" gutterBottom className="mont-semibold" sx={{ textAlign: 'center', color: '#6A1B9A' }}>
                   Delivery Methods
                 </Typography>
-                <FormGroup>
+                <FormGroup sx={{ display: 'flex', alignItems: 'center' }}>
                   <FormControlLabel
                     control={<Switch defaultChecked color="primary" />}
                     label="Email Notifications"
@@ -309,12 +329,12 @@ const NotificationsPage = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card sx={{ borderRadius: 0.4, border: '1px solid rgba(106, 27, 154, 0.3)' }}>
               <CardContent>
-                <Typography variant="subtitle1" gutterBottom className="mont-semibold">
+                <Typography variant="subtitle1" gutterBottom className="mont-semibold" sx={{ textAlign: 'center', color: '#6A1B9A' }}>
                   Notification Types
                 </Typography>
-                <FormGroup>
+                <FormGroup sx={{ display: 'flex', alignItems: 'center' }}>
                   <FormControlLabel
                     control={<Switch defaultChecked color="primary" />}
                     label="Usage Alerts"
@@ -339,10 +359,15 @@ const NotificationsPage = () => {
               </CardContent>
             </Card>
 
-            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
               <Button
                 variant="contained"
-                color="primary"
+                sx={{
+                  bgcolor: '#6A1B9A',
+                  '&:hover': { bgcolor: '#5c1786' },
+                  borderRadius: 0.2,
+                  px: 3
+                }}
                 className="mont-medium"
               >
                 Save Settings
@@ -354,13 +379,14 @@ const NotificationsPage = () => {
           <Box sx={{
             height: 200,
             bgcolor: 'rgba(106, 27, 154, 0.05)',
-            borderRadius: 2,
+            borderRadius: 0.4,
             mt: 3,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
-            p: 2
+            p: 2,
+            border: '2px solid #6A1B9A'
           }}>
             <Typography variant="subtitle1" color="primary" className="mont-semibold" gutterBottom>
               Notification Analytics
