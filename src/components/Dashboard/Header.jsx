@@ -30,9 +30,12 @@ import {
   BarChart as AnalyticsIcon,
   Lightbulb as AIIcon,
   Business as BusinessIcon,
-  Settings as ServiceManagementIcon
+  Settings as ServiceManagementIcon,
+  ExitToApp as LogoutIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 
 // Navigation menu items
 const menuItems = [
@@ -50,6 +53,12 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = React.useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  // Get user data from auth context
+  const { user, logout } = useAuth();
+
+  // Get notifications from notification context
+  const { notifications, unreadCount, markAsRead } = useNotifications();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -216,7 +225,7 @@ const Header = () => {
                 }
               }}
             >
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={unreadCount} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -226,7 +235,7 @@ const Header = () => {
             <IconButton
               size="large"
               color="inherit"
-              onClick={() => navigate('/settings-page')}
+              onClick={() => navigate('/settings')}
               sx={{
                 transition: 'all 0.3s ease',
                 '&:hover': {
@@ -258,7 +267,7 @@ const Header = () => {
               }}
             >
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-                <AccountCircle />
+                {user ? user.firstName.charAt(0) + user.lastName.charAt(0) : <AccountCircle />}
               </Avatar>
             </IconButton>
           </Tooltip>
@@ -358,9 +367,51 @@ const Header = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={() => { handleMenuClose(); navigate('/my-account-page'); }}>Profile</MenuItem>
-        <MenuItem onClick={() => { handleMenuClose(); navigate('/my-account-page'); }}>My account</MenuItem>
-        <MenuItem onClick={() => { handleMenuClose(); navigate('/logout-page'); }}>Logout</MenuItem>
+        {user && (
+          <Box sx={{ px: 2, py: 1, textAlign: 'center' }}>
+            <Avatar
+              sx={{
+                width: 50,
+                height: 50,
+                bgcolor: 'primary.main',
+                mx: 'auto',
+                mb: 1
+              }}
+            >
+              {user.firstName.charAt(0) + user.lastName.charAt(0)}
+            </Avatar>
+            <Typography variant="subtitle1" className="mont-semibold">
+              {user.firstName} {user.lastName}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              {user.email}
+            </Typography>
+          </Box>
+        )}
+        <Divider />
+        <MenuItem onClick={() => { handleMenuClose(); navigate('/my-account'); }}>
+          <ListItemIcon>
+            <AccountCircle fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>My Profile</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => { handleMenuClose(); navigate('/settings'); }}>
+          <ListItemIcon>
+            <SettingsIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Settings</ListItemText>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => {
+          handleMenuClose();
+          logout();
+          navigate('/login');
+        }}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Logout</ListItemText>
+        </MenuItem>
       </Menu>
 
       {/* Notifications Menu */}
@@ -376,36 +427,49 @@ const Header = () => {
           }
         }}
       >
-        <MenuItem onClick={() => { handleNotificationsMenuClose(); navigate('/notifications-page'); }}>
-          <Box>
-            <Typography variant="subtitle2" className="mont-medium">Data limit reached</Typography>
-            <Typography variant="body2" color="text.secondary" className="co-text">Line +355 69 234 5678 has reached 90% of data limit</Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem onClick={() => { handleNotificationsMenuClose(); navigate('/notifications-page'); }}>
-          <Box>
-            <Typography variant="subtitle2" className="mont-medium">Payment reminder</Typography>
-            <Typography variant="body2" color="text.secondary" className="co-text">Your monthly invoice is due in 3 days</Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem onClick={() => { handleNotificationsMenuClose(); navigate('/notifications-page'); }}>
-          <Box>
-            <Typography variant="subtitle2" className="mont-medium">New plan available</Typography>
-            <Typography variant="body2" color="text.secondary" className="co-text">Check out our new Business Ultimate plan</Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem onClick={() => { handleNotificationsMenuClose(); navigate('/notifications-page'); }}>
-          <Box>
-            <Typography variant="subtitle2" className="mont-medium">Service update</Typography>
-            <Typography variant="body2" color="text.secondary" className="co-text">Roaming services have been activated</Typography>
-          </Box>
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={() => { handleNotificationsMenuClose(); navigate('/notifications-page'); }}>
-          <Typography color="primary" className="mont-medium" sx={{ width: '100%', textAlign: 'center' }}>
-            View all notifications
-          </Typography>
-        </MenuItem>
+        {notifications.length === 0 ? (
+          <MenuItem>
+            <Box sx={{ py: 1 }}>
+              <Typography variant="body2" color="text.secondary" align="center">
+                No notifications
+              </Typography>
+            </Box>
+          </MenuItem>
+        ) : (
+          <>
+            {notifications.slice(0, 4).map((notification) => (
+              <MenuItem
+                key={notification.id}
+                onClick={() => {
+                  markAsRead(notification.id);
+                  handleNotificationsMenuClose();
+                  navigate('/notifications');
+                }}
+                sx={{
+                  backgroundColor: notification.read ? 'transparent' : 'rgba(106, 27, 154, 0.04)',
+                }}
+              >
+                <Box>
+                  <Typography variant="subtitle2" className="mont-medium">
+                    {notification.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" className="co-text">
+                    {notification.message}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {notification.time}
+                  </Typography>
+                </Box>
+              </MenuItem>
+            ))}
+            <Divider />
+            <MenuItem onClick={() => { handleNotificationsMenuClose(); navigate('/notifications'); }}>
+              <Typography color="primary" className="mont-medium" sx={{ width: '100%', textAlign: 'center' }}>
+                View all notifications
+              </Typography>
+            </MenuItem>
+          </>
+        )}
       </Menu>
     </AppBar>
   );

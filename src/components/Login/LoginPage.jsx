@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -15,7 +15,12 @@ import {
   CardContent,
   CardMedia,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Alert,
+  Checkbox,
+  FormControlLabel,
+  Snackbar,
+  CircularProgress
 } from '@mui/material';
 import {
   Visibility,
@@ -28,15 +33,35 @@ import {
   Speed,
   Security
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showError, setShowError] = useState(false);
+
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const { login, isAuthenticated, isLoading, error, clearError } = useAuth();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Show error message if login fails
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+    }
+  }, [error]);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -46,11 +71,22 @@ const LoginPage = () => {
     event.preventDefault();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically handle authentication
-    console.log('Login attempt with:', email, password);
-    navigate('/'); // Navigate to dashboard after login
+
+    if (!email || !password) {
+      return;
+    }
+
+    const success = await login(email, password, rememberMe);
+    if (success) {
+      navigate('/');
+    }
+  };
+
+  const handleCloseError = () => {
+    setShowError(false);
+    clearError();
   };
 
   return (
@@ -138,10 +174,31 @@ const LoginPage = () => {
                   }}
                 />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, mb: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                        color="primary"
+                      />
+                    }
+                    label="Remember me"
+                  />
                   <Link href="#" variant="body2" color="primary" underline="hover">
                     Forgot password?
                   </Link>
                 </Box>
+
+                {error && (
+                  <Alert
+                    severity="error"
+                    sx={{ mb: 2 }}
+                    onClose={handleCloseError}
+                  >
+                    {error}
+                  </Alert>
+                )}
+
                 <Button
                   type="submit"
                   fullWidth
@@ -150,8 +207,13 @@ const LoginPage = () => {
                   size="large"
                   sx={{ mt: 2, mb: 3, py: 1.5 }}
                   className="mont-semibold"
+                  disabled={isLoading || !email || !password}
                 >
-                  Log In
+                  {isLoading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    'Log In'
+                  )}
                 </Button>
 
                 <Divider sx={{ my: 3 }}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -27,7 +27,9 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import {
   Language as RoamingIcon,
@@ -47,80 +49,15 @@ import {
   LinkedIn,
   Instagram
 } from '@mui/icons-material';
+import { useServices } from '../../contexts/ServiceContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 
 const ServiceManagement = () => {
-  // Mock data for services that can be enabled/disabled
-  const initialServices = [
-    {
-      id: 1,
-      name: 'International Roaming',
-      description: 'Use your phone services while traveling abroad',
-      icon: RoamingIcon,
-      enabled: true,
-      category: 'connectivity',
-      lastChanged: '2023-06-15',
-      restrictions: null,
-      warningMessage: 'Enabling roaming may incur additional charges based on your destination'
-    },
-    {
-      id: 2,
-      name: 'International Calls',
-      description: 'Make calls to international numbers',
-      icon: CallsIcon,
-      enabled: false,
-      category: 'connectivity',
-      lastChanged: '2023-05-22',
-      restrictions: ['Europe', 'North America'],
-      warningMessage: 'International call rates vary by country'
-    },
-    {
-      id: 3,
-      name: 'Premium SMS',
-      description: 'Send and receive premium SMS services',
-      icon: SmsIcon,
-      enabled: false,
-      category: 'messaging',
-      lastChanged: '2023-04-10',
-      restrictions: null,
-      warningMessage: 'Premium SMS services may incur additional charges'
-    },
-    {
-      id: 4,
-      name: 'Data Sharing',
-      description: 'Share your data plan with other devices',
-      icon: DataIcon,
-      enabled: true,
-      category: 'data',
-      lastChanged: '2023-06-01',
-      restrictions: null,
-      warningMessage: null
-    },
-    {
-      id: 5,
-      name: 'Content Filtering',
-      description: 'Filter adult and inappropriate content',
-      icon: SecurityIcon,
-      enabled: true,
-      category: 'security',
-      lastChanged: '2023-03-15',
-      restrictions: null,
-      warningMessage: null
-    },
-    {
-      id: 6,
-      name: 'Usage Notifications',
-      description: 'Receive notifications about your usage',
-      icon: NotificationsIcon,
-      enabled: true,
-      category: 'notifications',
-      lastChanged: '2023-05-05',
-      restrictions: null,
-      warningMessage: null
-    }
-  ];
+  // Get services from context
+  const { services, toggleService } = useServices();
+  const { addNotification } = useNotifications();
 
-  // State for managing services
-  const [services, setServices] = useState(initialServices);
+  // State for dialogs and notifications
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
     service: null,
@@ -129,6 +66,11 @@ const ServiceManagement = () => {
   const [historyDialog, setHistoryDialog] = useState({
     open: false,
     serviceId: null
+  });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
   });
 
   // Mock data for service change history
@@ -161,13 +103,23 @@ const ServiceManagement = () => {
 
   // Update service state after confirmation
   const updateServiceState = (serviceId, newState) => {
-    setServices(prevServices =>
-      prevServices.map(service =>
-        service.id === serviceId
-          ? { ...service, enabled: newState, lastChanged: new Date().toISOString().split('T')[0] }
-          : service
-      )
-    );
+    // Use the toggleService function from context
+    const updatedService = toggleService(serviceId);
+
+    // Show success message
+    setSnackbar({
+      open: true,
+      message: `${updatedService.name} has been ${updatedService.enabled ? 'enabled' : 'disabled'}`,
+      severity: 'success'
+    });
+
+    // Add notification
+    addNotification({
+      title: `Service ${updatedService.enabled ? 'Enabled' : 'Disabled'}`,
+      message: `${updatedService.name} has been ${updatedService.enabled ? 'enabled' : 'disabled'}`,
+      type: 'system',
+      color: 'primary'
+    });
 
     // Close dialog if open
     setConfirmDialog({ open: false, service: null, newState: false });
@@ -863,6 +815,89 @@ const ServiceManagement = () => {
         </Box>
         </Box>
       </Box>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmDialog.open}
+        onClose={() => setConfirmDialog({ open: false, service: null, newState: false })}
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <WarningIcon sx={{ color: 'warning.main', mr: 1 }} />
+            Confirm Service Change
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {confirmDialog.service?.warningMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setConfirmDialog({ open: false, service: null, newState: false })}
+            color="inherit"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => updateServiceState(confirmDialog.service?.id, confirmDialog.newState)}
+            color="primary"
+            variant="contained"
+            autoFocus
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Service History Dialog */}
+      <Dialog
+        open={historyDialog.open}
+        onClose={() => setHistoryDialog({ open: false, serviceId: null })}
+      >
+        <DialogTitle>Service History</DialogTitle>
+        <DialogContent>
+          <List>
+            {serviceHistory
+              .filter(history => history.serviceId === historyDialog.serviceId)
+              .map(history => (
+                <ListItem key={history.id}>
+                  <ListItemIcon>
+                    {history.action === 'enabled' ? (
+                      <CheckIcon sx={{ color: 'success.main' }} />
+                    ) : (
+                      <CloseIcon sx={{ color: 'error.main' }} />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`${history.action.charAt(0).toUpperCase() + history.action.slice(1)} on ${history.date}`}
+                    secondary={`By: ${history.user}`}
+                  />
+                </ListItem>
+              ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setHistoryDialog({ open: false, serviceId: null })}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import './App.css';
@@ -17,6 +17,11 @@ import LogoutPage from './components/Logout/LogoutPage';
 import MyAccountPage from './components/MyAccount/MyAccountPage';
 import NotificationsPage from './components/Notifications/NotificationsPage';
 import SettingsPage from './components/Settings/SettingsPage';
+
+// Context Providers
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { ServiceProvider } from './contexts/ServiceContext';
 
 // Create a custom theme
 const theme = createTheme({
@@ -361,24 +366,46 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<DashboardHome />} />
-            <Route path="/service-overview" element={<ServiceOverview />} />
-            <Route path="/cost-control" element={<CostControl />} />
-            <Route path="/service-management" element={<ServiceManagement />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/ai-recommendations" element={<AIRecommendations />} />
-            <Route path="/login-page" element={<LoginPage />} />
-            <Route path="logout-page" element={<LogoutPage />} />
-            <Route path="my-account-page" element={<MyAccountPage />} />
-            <Route path="notifications-page" element={<NotificationsPage />} />
-            <Route path="settings-page" element={<SettingsPage />} />
-          </Routes>
-        </Layout>
-      </Router>
+      <AuthProvider>
+        <NotificationProvider>
+          <ServiceProvider>
+            <Router>
+              <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/logout" element={<LogoutPage />} />
+                <Route path="/*" element={<ProtectedRoutes />} />
+              </Routes>
+            </Router>
+          </ServiceProvider>
+        </NotificationProvider>
+      </AuthProvider>
     </ThemeProvider>
+  );
+}
+
+// Protected routes component that checks authentication
+function ProtectedRoutes() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/" element={<DashboardHome />} />
+        <Route path="/service-overview" element={<ServiceOverview />} />
+        <Route path="/cost-control" element={<CostControl />} />
+        <Route path="/service-management" element={<ServiceManagement />} />
+        <Route path="/analytics" element={<Analytics />} />
+        <Route path="/ai-recommendations" element={<AIRecommendations />} />
+        <Route path="/my-account" element={<MyAccountPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Layout>
   );
 }
 

@@ -22,7 +22,9 @@ import {
   Card,
   CardContent,
   Menu,
-  MenuItem
+  MenuItem,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import {
   Notifications as NotificationsIcon,
@@ -39,60 +41,7 @@ import {
   Settings as SettingsIcon,
   PhoneAndroid as PhoneAndroidIcon
 } from '@mui/icons-material';
-
-// Sample notification data
-const notifications = [
-  {
-    id: 1,
-    type: 'alert',
-    title: 'Data limit reached',
-    message: 'Line +355 69 234 5678 has reached 90% of data limit',
-    time: '2 hours ago',
-    read: false,
-    icon: <DataUsageIcon />,
-    color: 'warning'
-  },
-  {
-    id: 2,
-    type: 'billing',
-    title: 'Payment reminder',
-    message: 'Your monthly invoice is due in 3 days',
-    time: '1 day ago',
-    read: false,
-    icon: <CreditCardIcon />,
-    color: 'info'
-  },
-  {
-    id: 3,
-    type: 'promo',
-    title: 'New plan available',
-    message: 'Check out our new Business Ultimate plan with unlimited data',
-    time: '3 days ago',
-    read: true,
-    icon: <CampaignIcon />,
-    color: 'primary'
-  },
-  {
-    id: 4,
-    type: 'alert',
-    title: 'Service update',
-    message: 'Roaming services have been activated for your business lines',
-    time: '1 week ago',
-    read: true,
-    icon: <PhoneAndroidIcon />,
-    color: 'success'
-  },
-  {
-    id: 5,
-    type: 'billing',
-    title: 'Invoice available',
-    message: 'Your invoice for May 2023 is now available for download',
-    time: '2 weeks ago',
-    read: true,
-    icon: <CreditCardIcon />,
-    color: 'info'
-  }
-];
+import { useNotifications } from '../../contexts/NotificationContext';
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -116,9 +65,22 @@ const TabPanel = (props) => {
 
 const NotificationsPage = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [notificationsList, setNotificationsList] = useState(notifications);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+
+  // Get notifications from context
+  const {
+    notifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    unreadCount
+  } = useNotifications();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -136,40 +98,43 @@ const NotificationsPage = () => {
 
   const handleMarkAsRead = () => {
     if (selectedNotification) {
-      const updatedNotifications = notificationsList.map(notification =>
-        notification.id === selectedNotification.id
-          ? { ...notification, read: true }
-          : notification
-      );
-      setNotificationsList(updatedNotifications);
+      markAsRead(selectedNotification.id);
+      setSnackbar({
+        open: true,
+        message: 'Notification marked as read',
+        severity: 'success'
+      });
       handleMenuClose();
     }
   };
 
   const handleDelete = () => {
     if (selectedNotification) {
-      const updatedNotifications = notificationsList.filter(
-        notification => notification.id !== selectedNotification.id
-      );
-      setNotificationsList(updatedNotifications);
+      deleteNotification(selectedNotification.id);
+      setSnackbar({
+        open: true,
+        message: 'Notification deleted',
+        severity: 'success'
+      });
       handleMenuClose();
     }
   };
 
-  const handleMarkAllAsRead = () => {
-    const updatedNotifications = notificationsList.map(notification => ({
-      ...notification,
-      read: true
-    }));
-    setNotificationsList(updatedNotifications);
+  const handleMarkAllAsReadClick = () => {
+    markAllAsRead();
+    setSnackbar({
+      open: true,
+      message: 'All notifications marked as read',
+      severity: 'success'
+    });
   };
 
   const getFilteredNotifications = () => {
-    if (tabValue === 0) return notificationsList;
-    if (tabValue === 1) return notificationsList.filter(n => n.type === 'alert');
-    if (tabValue === 2) return notificationsList.filter(n => n.type === 'billing');
-    if (tabValue === 3) return notificationsList.filter(n => n.type === 'promo');
-    return notificationsList;
+    if (tabValue === 0) return notifications;
+    if (tabValue === 1) return notifications.filter(n => n.type === 'alert');
+    if (tabValue === 2) return notifications.filter(n => n.type === 'billing');
+    if (tabValue === 3) return notifications.filter(n => n.type === 'promotion');
+    return notifications;
   };
 
   const getIconByType = (notification) => {
@@ -182,12 +147,12 @@ const NotificationsPage = () => {
         return <CheckCircleIcon sx={{ color: 'success.main' }} />;
       case 'primary':
         return <NotificationsIcon sx={{ color: 'primary.main' }} />;
+      case 'error':
+        return <WarningIcon sx={{ color: 'error.main' }} />;
       default:
         return <NotificationsIcon sx={{ color: 'primary.main' }} />;
     }
   };
-
-  const unreadCount = notificationsList.filter(n => !n.read).length;
 
   return (
     <Box>
@@ -253,11 +218,12 @@ const NotificationsPage = () => {
               <Button
                 variant="text"
                 color="primary"
-                onClick={handleMarkAllAsRead}
+                onClick={handleMarkAllAsReadClick}
                 startIcon={<MarkEmailReadIcon />}
                 className="mont-medium"
                 size="small"
                 sx={{ mr: 1 }}
+                disabled={unreadCount === 0}
               >
                 Mark All as Read
               </Button>
@@ -422,6 +388,23 @@ const NotificationsPage = () => {
           <ListItemText primary="Delete" />
         </MenuItem>
       </Menu>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
