@@ -86,6 +86,8 @@ const ServiceOverview = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      {/* Budget Heading */}
+      
       {/* Header Section */}
       <Box
         sx={{
@@ -114,6 +116,9 @@ const ServiceOverview = () => {
           Manage all your telecom lines and services in one place.
         </Typography>
       </Box>
+
+      {/* Budget Limits Section */}
+      
 
       {/* Action Bar */}
       <Box sx={{
