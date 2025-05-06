@@ -1,8 +1,6 @@
 # ONE Albania SME Dashboard
 
-<p align="center">
-  <img src="public/one-albania-logo.svg" alt="ONE Albania Logo" width="300">
-</p>
+https://one-albania-sme-dashboard.surge.sh
 
 A smart dashboard solution for Small and Medium Enterprises (SMEs) to manage their telecom services with ONE Albania.
 
